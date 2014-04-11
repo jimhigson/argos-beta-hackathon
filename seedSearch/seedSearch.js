@@ -2,6 +2,7 @@
 
 var request = require('request');
 var cheerio = require('cheerio');
+require('colors');
 
 var productIds = [
    1021569,
@@ -35,12 +36,14 @@ function scrapeProductPage( productId, callback ) {
             imgUrl: $('#mainimage').attr('src')
          })
       } else {
-         console.log('oh dear, something terrible');
+         console.log('oh dear, something terrible'.red);
       }
    })
 }
 
-var productIds = loadProductIds( 50 );
+var productIds = loadProductIds(50);
+
+require('http').globalAgent.maxSockets = 50;
 
 productIds.forEach(function(productId){
    scrapeProductPage(productId, function(productJson) {
@@ -53,6 +56,6 @@ productIds.forEach(function(productId){
          body: JSON.stringify( productJson )
       });
       
-      console.log('put item', url);
+      console.log('put item', url.blue);
    });
 });

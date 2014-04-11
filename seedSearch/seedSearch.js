@@ -27,6 +27,7 @@ function scrapeProductPage( productId, callback ) {
          var $ = cheerio.load(body);
          
          callback({
+            productId: productId,
             productTitle:$('#pdpProduct h1.fn').text().trim(),
             price: $('span.price').first().text().trim(),
             summary: $('.fullDetails').html(),
@@ -43,6 +44,15 @@ var productIds = loadProductIds( 50 );
 
 productIds.forEach(function(productId){
    scrapeProductPage(productId, function(productJson) {
-      console.log('got some json', productJson);
+
+      var url = 'http://localhost:9200/argos/products/' + productId;
+      
+      request({
+         url: url,
+         method:'PUT',
+         body: JSON.stringify( productJson )
+      });
+      
+      console.log('put item', url);
    });
 });

@@ -8,7 +8,10 @@ jQuery(document).ready(function($){
     $('input.main-search').keyup(function() {
 
     	// Local Machine
-    	var searchURL = document.location.origin + '/search/*' + $(this).val() + '*';
+    	//var searchURL = document.location.origin + '/search/*' + $(this).val() + '*';
+
+    	// Stevens Machine
+    	var searchURL = 'http://192.168.68.141:6677/search/*' + $(this).val() + '*';
 
     	$.ajax({
     		url: searchURL

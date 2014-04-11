@@ -1,4 +1,4 @@
-var PORT = 6677;
+var PORT = 80;
 var express = require('express');
 
 var app = express();
@@ -11,9 +11,17 @@ app
    })
    .get('/search/:term', function(req, res){
 
+      var searchTerm = req.params.term;
+      
       var requestBodyJson = {
-         "query" : { "query_string" : {"query" : req.params.term} }
-      };
+         "query" : {
+            "query_string" : {
+               "fields" : ["productTitle^5", "summaryText"],
+               "query" : searchTerm
+            } 
+         }            
+      }         
+      ;
       
       request({
          

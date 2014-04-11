@@ -17,10 +17,10 @@ jQuery(document).ready(function($){
 	    		$.each(data['hits']['hits'], function() {
 	    			console.log(this['_source']['productTitle']);
 
-	    			thisResult =  '<div class="searchResultBox">';
+	    			thisResult =  '<div class="searchResultBox cf">';
 	    			thisResult += '<div class="sImg"><img src="http://www.argos.co.uk/' + this['_source']['imgUrl'] +  '"></img></div>'
 	    			thisResult += '<h3>' + this['_source']['productTitle'] + '</h3>';
-	    			thisResult += '<span>£' + this['_source']['price'] +  '</span>';
+	    			thisResult += '<span>£' + this['_source']['price'] +  '</span></div>';
 
 	    			//console.log(thisResult);
 	    			$('#auto-complete').append(thisResult);

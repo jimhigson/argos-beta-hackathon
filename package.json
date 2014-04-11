@@ -1,0 +1,27 @@
+{
+  "name": "hackathon",
+  "version": "0.0.0",
+  "description": "A hacking search experience",
+  "main": "index.js",
+  "dependencies": {
+    "express": "~4.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jimhigson/googos.git"
+  },
+  "keywords": [
+    "search",
+    "argos"
+  ],
+  "author": "The e-com agile team",
+  "license": "none",
+  "bugs": {
+    "url": "https://github.com/jimhigson/googos/issues"
+  },
+  "homepage": "https://github.com/jimhigson/googos"
+}

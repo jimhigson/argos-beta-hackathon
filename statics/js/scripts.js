@@ -17,8 +17,8 @@ jQuery(document).ready(function($){
 	    		$.each(data['hits']['hits'], function() {
 	    			console.log(this['_source']['productTitle']);
 
-	    			thisResult =  '<div class="sImg"><div class="searchResultBox"></div>';
-	    			thisResult += '<img src="http://www.argos.co.uk/' + this['_source']['imgUrl'] +  '"></img>'
+	    			thisResult =  '<div class="searchResultBox">';
+	    			thisResult += '<div class="sImg"><img src="http://www.argos.co.uk/' + this['_source']['imgUrl'] +  '"></img></div>'
 	    			thisResult += '<h3>' + this['_source']['productTitle'] + '</h3>';
 	    			thisResult += '<span>£' + this['_source']['price'] +  '</span>';
 

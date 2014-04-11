@@ -29,7 +29,7 @@ function scrapeProductPage( productId, callback ) {
          callback({
             productId: productId,
             productTitle:$('#pdpProduct h1.fn').text().trim(),
-            price: $('span.price').first().text().trim(),
+            price: $('span.price').first().text().trim().match(/[\d.]+/)[0],
             summary: $('.fullDetails').html(),
             summaryText: $('.fullDetails').text(),
             imgUrl: $('#mainimage').attr('src')

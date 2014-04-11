@@ -4,7 +4,6 @@ html {
   font-size: 100%;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-    overflow:scroll;
 }
 html,
 button,
@@ -348,6 +347,28 @@ body {
 }
 #auto-complete {
   display: none;
-  background: lime;
   padding: 20px;
+}
+.searchResultBox {
+  background: #fff;
+  margin-top: 5px;
+  width: 940px;
+  position: relative;
+  left: -50px;
+  padding-left: 10px;
+  color: #111111;
+}
+.searchResultBox .sImg {
+  float: left;
+  margin-right: 20px;
+  width: 70px;
+  display: block;
+}
+.searchResultBox h3 {
+  font-size: 16px;
+  margin: 22px 0 5px 0;
+}
+.searchResultBox span {
+  font-size: 18px;
+  font-weight: bold;
 }

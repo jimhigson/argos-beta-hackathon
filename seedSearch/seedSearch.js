@@ -41,9 +41,11 @@ function scrapeProductPage( productId, callback ) {
    })
 }
 
-var productIds = loadProductIds(50);
+var productIds = loadProductIds(10);
 
 require('http').globalAgent.maxSockets = 50;
+
+var itemsSoFar = 0;
 
 productIds.forEach(function(productId){
    scrapeProductPage(productId, function(productJson) {
@@ -55,7 +57,10 @@ productIds.forEach(function(productId){
          method:'PUT',
          body: JSON.stringify( productJson )
       });
+
+      itemsSoFar++;
+      var percent = Math.round( 100 * itemsSoFar/productIds.length );
       
-      console.log('put item', url.blue);
+      console.log(String(itemsSoFar).blue, '(' + String(percent).green + '%) put item', url.blue);
    });
 });

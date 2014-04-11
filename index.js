@@ -1,4 +1,4 @@
-var PORT = 6677;
+var PORT = 80;
 var express = require('express');
 
 var app = express();
@@ -11,9 +11,18 @@ app
    })
    .get('/search/:term', function(req, res){
 
+      var startTime = Date.now();
+      var searchTerm = req.params.term;
+      
       var requestBodyJson = {
-         "query" : { "query_string" : {"query" : req.params.term} }
-      };
+         "query" : {
+            "query_string" : {
+               "fields" : ["productId^6", "productTitle^5", "summaryText"],
+               "query" : searchTerm
+            } 
+         }            
+      }         
+      ;
       
       request({
          
@@ -23,6 +32,7 @@ app
          
       }, function(error, _, responseBodyJson) {
          res.setHeader('Content-Type', 'application/json');
+         responseBodyJson.timeTaken = startTime - Date.now();
          res.send(responseBodyJson);
       });
    });

@@ -7,12 +7,7 @@
 	
 	<title>Googos</title>
 	
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/style.css">
-	
-	<script src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.js"></script>
-    <script src="js/ngAutocomplete.js"></script>
 
 </head>
 
@@ -20,16 +15,34 @@
 
 	<div id="wrapper">
 
-		<div id="logo">
-			<img src="http://placehold.it/700x200&text=Googos" alt="Googos">
-		</div>
+		<div id="trim"></div>
 
-		<form action="#">
-			<input type="text" class="form-control main-search" placeholder="Search...">
-			<div id="auto-complete">
-				
-			</div><!-- auto-complete -->
-		</form>
+		<header id="hero">
+
+			<div id="logo">
+				<img src="img/logo-a.png" alt="Googos">
+			</div>
+
+		</header>
+
+		<section id="search">
+			
+			<div id="searchInner">
+				<div class="searchIconWrap"><img src="img/icon-search.png" alt="Search"></div>
+				<form action="#">
+					<input type="text" class="main-search" placeholder="Search...">
+					<div id="auto-complete"></div>
+				</form>
+			</div><!-- searchInner -->
+
+		</section><!-- search -->
+
+		<section id="content">
+			
+
+
+		</section><!-- content -->
+		
 		
 	</div><!-- wrapper -->
 	

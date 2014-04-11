@@ -11,12 +11,13 @@ app
    })
    .get('/search/:term', function(req, res){
 
+      var startTime = Date.now();
       var searchTerm = req.params.term;
       
       var requestBodyJson = {
          "query" : {
             "query_string" : {
-               "fields" : ["productTitle^5", "summaryText"],
+               "fields" : ["productId^6", "productTitle^5", "summaryText"],
                "query" : searchTerm
             } 
          }            
@@ -31,6 +32,7 @@ app
          
       }, function(error, _, responseBodyJson) {
          res.setHeader('Content-Type', 'application/json');
+         responseBodyJson.timeTaken = startTime - Date.now();
          res.send(responseBodyJson);
       });
    });

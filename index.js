@@ -12,12 +12,7 @@ app
    .get('/search/:term', function(req, res){
 
       var requestBodyJson = {
-         query: {
-            "match": {
-               productId: req.params.term
-               //summaryText: req.params.term
-            }
-         }
+         "query" : { "query_string" : {"query" : req.params.term} }
       };
       
       request({

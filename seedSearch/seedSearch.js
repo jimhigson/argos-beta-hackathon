@@ -41,7 +41,7 @@ function scrapeProductPage( productId, callback ) {
    })
 }
 
-var productIds = loadProductIds(16699);
+var productIds = loadProductIds();
 
 require('http').globalAgent.maxSockets = 50;
 

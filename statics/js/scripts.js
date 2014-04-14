@@ -8,7 +8,7 @@ jQuery(document).ready(function($){
     $('input.main-search').keyup(function() {
 
     	if($(this).val() !== '') {
-	    	var searchURL = document.location.origin + '/search/*' + $(this).val() + '*';
+	    	var searchURL = document.location.origin + '/search/' + $(this).val();
 
 	    	$.ajax({
 	    		url: searchURL

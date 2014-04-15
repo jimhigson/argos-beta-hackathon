@@ -93,8 +93,5 @@ productIds.forEach(function(productId){
          }
       });
 
-
-      
-
    });
 });

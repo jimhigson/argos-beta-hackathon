@@ -10,8 +10,8 @@ var argv = require('minimist')(process.argv.slice(2));
 var gaveRange = (argv.startIndex !== undefined && argv.endIndex !== undefined);
 if(!argv.all && !gaveRange) {
    console.log('not enough parameters. Call like:\n' +
-      'seedSearch.js --startIndex 0 --endIndex 50 \n ' +
-      'seedSearch.js --all \n ');
+      '\tseedSearch.js --startIndex 0 --endIndex 50 \n' +
+      '\tseedSearch.js --all \n ');
    process.exit(1);
 }
 

@@ -15,7 +15,25 @@ function loadProductIds( start, end ) {
    return allIds.slice(start, end);
 }
 
-function scrapeProductPage( productId, callback ) {
+function scrapeProductPrice($) {
+   
+   var priceMatch = $('span.price').first().text().trim().match(/[\d.]+/);
+   
+   return priceMatch ? Number(priceMatch[0]) : 0; // the regex doesn't match on some pages
+}
+
+function scrapeProductPage(productId, $) {
+   return {
+      productId: productId,
+      productTitle: $('#pdpProduct h1.fn').text().trim(),
+      price: scrapeProductPrice($),
+      summary: $('.fullDetails').html(),
+      summaryText: $('.fullDetails').text(),
+      imgUrl: $('#mainimage').attr('src')
+   };
+}
+
+function fetchAndScrapeProduct( productId, callback ) {
 
    var url = 'http://www.argos.co.uk/static/Product/partNumber/' + productId + '.htm';
    
@@ -23,44 +41,56 @@ function scrapeProductPage( productId, callback ) {
       
       if (!error && response.statusCode == 200) {
          var $ = cheerio.load(body);
-         
-         var priceMatch = $('span.price').first().text().trim().match(/[\d.]+/);
-         var price = priceMatch ? priceMatch[0] : 0; // regex doesn't match on some pages  
-         
-         callback({
-            productId: productId,
-            productTitle:$('#pdpProduct h1.fn').text().trim(),
-            price: price,
-            summary: $('.fullDetails').html(),
-            summaryText: $('.fullDetails').text(),
-            imgUrl: $('#mainimage').attr('src')
-         })
+
+         try {
+            callback(undefined, scrapeProductPage(productId, $));
+         } catch(e) {
+            callback(e);
+         }
       } else {
-         console.log('oh dear, something terrible'.red);
+         var errorMsg = 'could not fetch ' + url + ':' + error; 
+         callback(errorMsg);
       }
    })
 }
 
-var productIds = loadProductIds(16699);
+var productIds = loadProductIds(0, 50);
 
 require('http').globalAgent.maxSockets = 50;
 
 var itemsSoFar = 0;
 
 productIds.forEach(function(productId){
-   scrapeProductPage(productId, function(productJson) {
+   fetchAndScrapeProduct(productId, function(err, productJson) {
 
+      if( err ) {
+         console.log('error fetching product'.red, err);
+      }
+      
       var url = 'http://localhost:9200/argos/products/' + productId;
       
       request({
          url: url,
          method:'PUT',
          body: JSON.stringify( productJson )
+      }, function(error, res, body) {
+         
+         var statusFirstChar = String(res.statusCode)[0];
+         
+         if (error || statusFirstChar != '2') {
+            var errorMsg = 'could not PUT into index ' + url + ':' + error;
+            console.log(errorMsg.red, '\n', productJson, '\n', res.statusCode, body);
+         } else {
+            
+            itemsSoFar++;
+            
+            var percent = Math.round( 100 * itemsSoFar/productIds.length );
+            console.log(String(itemsSoFar).blue, '(' + String(percent).green + '%) put item', url.blue);
+         }
       });
 
-      itemsSoFar++;
-      var percent = Math.round( 100 * itemsSoFar/productIds.length );
+
       
-      console.log(String(itemsSoFar).blue, '(' + String(percent).green + '%) put item', url.blue);
+
    });
 });

@@ -6,17 +6,24 @@ require('colors');
 
 var argv = require('minimist')(process.argv.slice(2));
 
-if(argv.startIndex === undefined || argv.endIndex === undefined) {
-   console.log('not enough parameters. Call like: seedSearch.js --startIndex 0 --endIndex 50');
+
+var gaveRange = (argv.startIndex !== undefined && argv.endIndex !== undefined);
+if(!argv.all && !gaveRange) {
+   console.log('not enough parameters. Call like:\n' +
+      'seedSearch.js --startIndex 0 --endIndex 50 \n ' +
+      'seedSearch.js --all \n ');
    process.exit(1);
 }
 
-function loadProductIds( start, end ) {
+function loadAllProductIds() {
    
    var fs = require('fs');
-   var allIds = JSON.parse(fs.readFileSync('numbers.json'));
+   return JSON.parse(fs.readFileSync('numbers.json'));
+}
+
+function loadProductIdsInRange( start, end ) {
    
-   return allIds.slice(start, end);
+   return loadAllProductIds().slice(start, end);
 }
 
 function scrapeProductPrice($) {
@@ -58,7 +65,8 @@ function fetchAndScrapeProduct( productId, callback ) {
    })
 }
 
-var productIds = loadProductIds(Number(argv.startIndex), Number(argv.endIndex));
+
+var productIds = gaveRange? loadProductIdsInRange(argv.startIndex, argv.endIndex) : loadAllProductIds();
 
 require('http').globalAgent.maxSockets = 50;
 

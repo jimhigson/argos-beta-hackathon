@@ -7,6 +7,8 @@ jQuery(document).ready(function($){
 
     $('input.main-search').keyup(function() {
 
+    	$('#search').addClass('focus');
+
     	if($(this).val() !== '') {
 	    	var searchURL = document.location.origin + '/search/*' + $(this).val() + '*';
 
@@ -28,6 +30,8 @@ jQuery(document).ready(function($){
 	    	});
     	} else {
     		$('#auto-complete').html('');
+    		$('#auto-complete').removeAttr('style');
+    		$('#search').removeClass('focus');
     	}
 
 

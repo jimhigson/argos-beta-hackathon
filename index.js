@@ -17,9 +17,8 @@ app
                "fields" : ["productId^6", "productTitle^5", "summaryText"],
                "query" : searchTerm
             } 
-         }            
-      }         
-      ;
+         }
+      };
       
       request({
          

@@ -6,9 +6,6 @@ var request = require('request');
 
 app
    .use(express.static('statics'))
-   .get('/', function(req, res){
-      res.send({ some: 'json' });
-   })
    .get('/search/:term', function(req, res){
 
       var startTime = Date.now();

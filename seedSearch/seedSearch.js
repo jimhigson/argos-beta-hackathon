@@ -1,11 +1,14 @@
 #! /usr/local/bin/node
 
+var MAX_SIMULTANEOUS_PAGE_REQUESTS = 50;
+var MAX_REQUEST_FREQUENCY_MS = 50;
+
 var request = require('request');
 var cheerio = require('cheerio');
+require('http').globalAgent.maxSockets = MAX_SIMULTANEOUS_PAGE_REQUESTS;
 require('colors');
 
 var argv = require('minimist')(process.argv.slice(2));
-
 
 var gaveRange = (argv.startIndex !== undefined && argv.endIndex !== undefined);
 if(!argv.all && !gaveRange) {
@@ -14,6 +17,7 @@ if(!argv.all && !gaveRange) {
       '\tseedSearch.js --all \n ');
    process.exit(1);
 }
+
 
 function loadAllProductIds() {
    
@@ -48,9 +52,9 @@ function fetchAndScrapeProduct( productId, callback ) {
 
    var url = 'http://www.argos.co.uk/static/Product/partNumber/' + productId + '.htm';
    
-   request(url, function (error, response, body) {
+   request(url, function (error, res, body) {
       
-      if (!error && response.statusCode == 200) {
+      if (!error && requestSuccessful(res)) {
          var $ = cheerio.load(body);
 
          try {
@@ -66,40 +70,81 @@ function fetchAndScrapeProduct( productId, callback ) {
 }
 
 
-var productIds = gaveRange? loadProductIdsInRange(argv.startIndex, argv.endIndex) : loadAllProductIds();
-
-require('http').globalAgent.maxSockets = 50;
-
+var productsIdsToRequest = gaveRange? loadProductIdsInRange(argv.startIndex, argv.endIndex) : loadAllProductIds();
+var numberOfRequests = productsIdsToRequest.length; 
 var itemsSoFar = 0;
 
-productIds.forEach(function(productId){
+var pendingRequests = 0;
+
+var interval = setInterval(function() {
+   
+   var unrequestedProducts = (productsIdsToRequest.length != 0),
+       hasRequestSlots = pendingRequests < MAX_SIMULTANEOUS_PAGE_REQUESTS;
+   
+   if( !unrequestedProducts ) {
+      
+      clearInterval(interval);
+      console.log('All products have been requested.');
+      
+   } else {
+
+      if( hasRequestSlots ) {
+         spiderNextProduct();
+      }
+   }
+}, MAX_REQUEST_FREQUENCY_MS);
+
+function elasticSearchProductUrl(productId) {
+   return 'http://localhost:9200/argos/products/' + productId;
+}
+
+function requestSuccessful(res) {
+   var firstChar = String(res.statusCode)[0];
+   return firstChar == '2';
+}
+
+function handleElasticSearchPutResponse(error, res, body) {
+   
+   var url = res.request.uri.href;
+   
+   pendingRequests--;
+   
+   if (error || !requestSuccessful(res)) {
+      var productJson = res.request.body.toString(),
+          errorMsg = 'Could not PUT into index ' + url + ':' + error;
+      
+      console.log('ERROR'.red, errorMsg, '\n', productJson, '\n', res.statusCode, body);
+      return;
+   }
+
+   itemsSoFar++;
+   var percent = Math.round( 100 * itemsSoFar/numberOfRequests );
+   console.log(String(itemsSoFar).blue, '(' + String(percent).green + '%) PUT item', String(url));
+
+   if( pendingRequests == 0 && productsIdsToRequest.length == 0 ) {
+      console.log('All products pushed to ElasticSearch');
+      process.exit(0);
+   }
+   
+}
+
+function spiderNextProduct() {
+   var productId = productsIdsToRequest.pop();
+   pendingRequests++;
+
    fetchAndScrapeProduct(productId, function(err, productJson) {
 
       if( err ) {
-         console.log('error fetching product'.red, err);
+         console.log('ERROR'.red, 'could not fetch product'.red, err);
+         return;
       }
       
-      var url = 'http://localhost:9200/argos/products/' + productId;
-      
+      var url = elasticSearchProductUrl(productId);
+
       request({
          url: url,
          method:'PUT',
          body: JSON.stringify( productJson )
-      }, function(error, res, body) {
-         
-         var statusFirstChar = String(res.statusCode)[0];
-         
-         if (error || statusFirstChar != '2') {
-            var errorMsg = 'could not PUT into index ' + url + ':' + error;
-            console.log(errorMsg.red, '\n', productJson, '\n', res.statusCode, body);
-         } else {
-            
-            itemsSoFar++;
-            
-            var percent = Math.round( 100 * itemsSoFar/productIds.length );
-            console.log(String(itemsSoFar).blue, '(' + String(percent).green + '%) put item', url.blue);
-         }
-      });
-
+      }, handleElasticSearchPutResponse);
    });
-});
+}

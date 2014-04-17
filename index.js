@@ -65,7 +65,7 @@ app
                "query":{
                   "query_string": {
                      "fields": ["productId^8", "productTitle^8", "summaryText"],
-                     "query": queryTerms.term
+                     "query": queryTerms.term + '*'
                   }
                },
                "filter": {

@@ -21,7 +21,7 @@ $(document).ready(function ($) {
                                 + '<img src="http://www.argos.co.uk/' + source['imgUrl'] + '">'
                                 + '<div class="description">'
                                    + '<h3>' + source['productTitle'] + '</h3>'
-                                   + '<span>£' + source['price'] + '</span>'
+                                   + '<span>£' + Number(source['price']).toFixed(2) + '</span>'
                                 + '</div>'
                              + '</div>';
 

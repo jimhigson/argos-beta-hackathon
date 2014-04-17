@@ -299,6 +299,7 @@ img {
    ========================================= */
 body {
   background: #ebebeb;
+  overflow-y:scroll;
 }
 #trim {
   height: 35px;

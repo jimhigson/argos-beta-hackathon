@@ -1,66 +1,150 @@
 #! /usr/local/bin/node
 
+var MAX_SIMULTANEOUS_PAGE_REQUESTS = 50;
+var MAX_REQUEST_FREQUENCY_MS = 50;
+
 var request = require('request');
 var cheerio = require('cheerio');
+require('http').globalAgent.maxSockets = MAX_SIMULTANEOUS_PAGE_REQUESTS;
 require('colors');
 
-function loadProductIds( start, end ) {
-   
-   var fs = require('fs');
-   var allIds = JSON.parse(fs.readFileSync('numbers.json'));
+var argv = require('minimist')(process.argv.slice(2));
 
-   start = start || 0;
-   end = end || allIds.length;
-   
-   return allIds.slice(start, end);
+var gaveRange = (argv.startIndex !== undefined && argv.endIndex !== undefined);
+if(!argv.all && !gaveRange) {
+   console.log('not enough parameters. Call like:\n' +
+      '\tseedSearch.js --startIndex 0 --endIndex 50 \n' +
+      '\tseedSearch.js --all \n ');
+   process.exit(1);
 }
 
-function scrapeProductPage( productId, callback ) {
+
+function loadAllProductIds() {
+   
+   var fs = require('fs');
+   return JSON.parse(fs.readFileSync('numbers.json'));
+}
+
+function loadProductIdsInRange( start, end ) {
+   
+   return loadAllProductIds().slice(start, end);
+}
+
+function scrapeProductPrice($) {
+   
+   var priceMatch = $('span.price').first().text().trim().match(/[\d.]+/);
+   
+   return priceMatch ? Number(priceMatch[0]) : 0; // the regex doesn't match on some pages
+}
+
+function scrapeProductPage(productId, $) {
+   return {
+      productId: productId,
+      productTitle: $('#pdpProduct h1.fn').text().trim(),
+      price: scrapeProductPrice($),
+      summary: $('.fullDetails').html(),
+      summaryText: $('.fullDetails').text(),
+      imgUrl: $('#mainimage').attr('src')
+   };
+}
+
+function fetchAndScrapeProduct( productId, callback ) {
 
    var url = 'http://www.argos.co.uk/static/Product/partNumber/' + productId + '.htm';
    
-   request(url, function (error, response, body) {
+   request(url, function (error, res, body) {
       
-      if (!error && response.statusCode == 200) {
+      if (!error && requestSuccessful(res)) {
          var $ = cheerio.load(body);
-         
-         var priceMatch = $('span.price').first().text().trim().match(/[\d.]+/);
-         var price = priceMatch ? priceMatch[0] : 0; // regex doesn't match on some pages  
-         
-         callback({
-            productId: productId,
-            productTitle:$('#pdpProduct h1.fn').text().trim(),
-            price: price,
-            summary: $('.fullDetails').html(),
-            summaryText: $('.fullDetails').text(),
-            imgUrl: $('#mainimage').attr('src')
-         })
+
+         try {
+            callback(undefined, scrapeProductPage(productId, $));
+         } catch(e) {
+            callback(e);
+         }
       } else {
-         console.log('oh dear, something terrible'.red);
+         var errorMsg = 'could not fetch ' + url + ':' + error; 
+         callback(errorMsg);
       }
    })
 }
 
-var productIds = loadProductIds(16699);
 
-require('http').globalAgent.maxSockets = 50;
-
+var productsIdsToRequest = gaveRange? loadProductIdsInRange(argv.startIndex, argv.endIndex) : loadAllProductIds();
+var numberOfRequests = productsIdsToRequest.length; 
 var itemsSoFar = 0;
 
-productIds.forEach(function(productId){
-   scrapeProductPage(productId, function(productJson) {
+var pendingRequests = 0;
 
-      var url = 'http://localhost:9200/argos/products/' + productId;
+var interval = setInterval(function() {
+   
+   var unrequestedProducts = (productsIdsToRequest.length != 0),
+       hasRequestSlots = pendingRequests < MAX_SIMULTANEOUS_PAGE_REQUESTS;
+   
+   if( !unrequestedProducts ) {
       
+      clearInterval(interval);
+      console.log('All products have been requested.');
+      
+   } else {
+
+      if( hasRequestSlots ) {
+         spiderNextProduct();
+      }
+   }
+}, MAX_REQUEST_FREQUENCY_MS);
+
+function elasticSearchProductUrl(productId) {
+   return 'http://localhost:9200/argos/products/' + productId;
+}
+
+function requestSuccessful(res) {
+   var firstChar = String(res.statusCode)[0];
+   return firstChar == '2';
+}
+
+function handleElasticSearchPutResponse(error, res, body) {
+   
+   var url = res.request.uri.href;
+   
+   pendingRequests--;
+   
+   if (error || !requestSuccessful(res)) {
+      var productJson = res.request.body.toString(),
+          errorMsg = 'Could not PUT into index ' + url + ':' + error;
+      
+      console.log('ERROR'.red, errorMsg, '\n', productJson, '\n', res.statusCode, body);
+      return;
+   }
+
+   itemsSoFar++;
+   var percent = Math.round( 100 * itemsSoFar/numberOfRequests );
+   console.log(String(itemsSoFar).blue, '(' + String(percent).green + '%) PUT item', String(url));
+
+   if( pendingRequests == 0 && productsIdsToRequest.length == 0 ) {
+      console.log('All products pushed to ElasticSearch');
+      process.exit(0);
+   }
+   
+}
+
+function spiderNextProduct() {
+   var productId = productsIdsToRequest.pop();
+   pendingRequests++;
+
+   fetchAndScrapeProduct(productId, function(err, productJson) {
+
+      if( err ) {
+         console.log('ERROR'.red, 'could not fetch product'.red, err);
+         return;
+      }
+      
+      var url = elasticSearchProductUrl(productId);
+
       request({
          url: url,
          method:'PUT',
          body: JSON.stringify( productJson )
-      });
-
-      itemsSoFar++;
-      var percent = Math.round( 100 * itemsSoFar/productIds.length );
-      
-      console.log(String(itemsSoFar).blue, '(' + String(percent).green + '%) put item', url.blue);
+      }, handleElasticSearchPutResponse);
    });
-});
+}

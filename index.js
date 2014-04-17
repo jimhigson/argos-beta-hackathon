@@ -32,10 +32,7 @@ function priceRange(query) {
 
 app
    .use(express.static('statics'))
-   .get('/', function(req, res){
-      res.send({ some: 'json' });
-   })
-   .get('/search/:query', function(req, res){
+   .get('/search/:term', function(req, res){
 
       var startTime = Date.now(),
           query = req.params.query;

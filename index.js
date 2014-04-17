@@ -1,10 +1,10 @@
 var PORT = 6677;
-var express = require('express');
+var ELASTIC_SEARCH_HOST = 'http://beta.vichub.co.uk:9200/argos';
 
+var express = require('express');
 var app = express();
 var request = require('request');
 require('colors');
-
 
 function priceRange(query) {
    
@@ -15,8 +15,8 @@ function priceRange(query) {
                      ;
    }
    
-   var LESS_THAN_PATTERN = /(?:less than|<|under|cheaper than) £?(\d+(.\d+)?)/,
-       MORE_THAN_PATTERN = /(?:more than|>|over|at least|above) £?(\d+(.\d+)?)/,
+   var LESS_THAN_PATTERN = /(?:for )?(?:less than|<|under|cheaper than) £?(\d+(.\d+)?)/,
+       MORE_THAN_PATTERN = /(?:for )?(?:more than|>|over|at least|above) £?(\d+(.\d+)?)/,
        minPriceMatch = MORE_THAN_PATTERN.exec(query),
        maxPriceMatch = LESS_THAN_PATTERN.exec(query);
    
@@ -27,7 +27,7 @@ function priceRange(query) {
          withoutMatchingText( minPriceMatch, 
                withoutMatchingText( maxPriceMatch, query )
          ).trim()
-   }
+   };
 }
 
 app
@@ -35,7 +35,7 @@ app
    .get('/search/:term', function(req, res){
 
       var startTime = Date.now(),
-          query = req.params.query;
+          query = req.params.term;
       
       var queryTerms = priceRange(query);
       
@@ -61,10 +61,10 @@ app
       };
       
       console.log( JSON.stringify( requestBodyJson ) );
-      
+
       request({
          
-         url: 'http://localhost:9200/argos/products/_search',
+         url: ELASTIC_SEARCH_HOST + '/products/_search',
          method:'GET',
          body: JSON.stringify( requestBodyJson )
          

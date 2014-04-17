@@ -19,7 +19,7 @@ $(document).ready(function ($) {
 
                var source = this['_source'];
 
-               thisResult = '<div class="searchResultBox">'
+               thisResult =    '<div class="searchResultBox">'
                                 + '<img src="http://www.argos.co.uk/' + source['imgUrl'] + '">'
                                 + '<div class="description">'
                                    + '<h3>' + source['productTitle'] + '</h3>'

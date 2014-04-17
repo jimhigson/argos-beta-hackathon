@@ -139,7 +139,7 @@ function spiderNextProduct() {
       console.log(productJson);
       
       if( err ) {
-         console.log('ERROR'.red, 'could not fetch product'.red, err);
+         console.log('ERROR'.red, 'could not fetch product', productId, err);
          return;
       }
       

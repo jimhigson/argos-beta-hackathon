@@ -1,5 +1,3 @@
-/* ALL JQUERY
- ========================================= */
 
 $(document).ready(function ($) {
 

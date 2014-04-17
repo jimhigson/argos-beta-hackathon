@@ -38,13 +38,15 @@ function scrapeProductPrice($) {
 }
 
 function scrapeProductPage(productId, $) {
+      
    return {
       productId: productId,
       productTitle: $('#pdpProduct h1.fn').text().trim(),
       price: scrapeProductPrice($),
       summary: $('.fullDetails').html(),
       summaryText: $('.fullDetails').text(),
-      imgUrl: $('#mainimage').attr('src')
+      imgUrl: $('#mainimage').attr('src'),
+      category:$('.category').text().trim()
    };
 }
 
@@ -134,6 +136,8 @@ function spiderNextProduct() {
 
    fetchAndScrapeProduct(productId, function(err, productJson) {
 
+      console.log(productJson);
+      
       if( err ) {
          console.log('ERROR'.red, 'could not fetch product'.red, err);
          return;

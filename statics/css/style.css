@@ -259,24 +259,10 @@ body {
   font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
-/* -- Clearfix -- */
-.cf:before,
-.cf:after {
-  content: " ";
-  display: table;
-}
-.cf:after {
-  clear: both;
-}
-.cf {
-  *zoom: 1;
-  /* For IE 6/7 only */
-}
+
 /* -- Responsive images and objects -- */
 img {
-  display: block;
   height: auto;
-  max-width: 100%;
 }
 .embed-container {
   position: relative;
@@ -355,20 +341,27 @@ body {
   width: 940px;
   position: relative;
   left: -50px;
-  padding-left: 10px;
+  padding:5px 20px;
   color: #111111;
 }
-.searchResultBox .sImg {
-  float: left;
-  margin-right: 20px;
-  width: 70px;
-  display: block;
+.searchResultBox img {
+  margin: 5px;
+  width: 60px;
+}
+.searchResultBox .description {
+    margin: 0 0 5px 25px;
+    position:absolute;
+    top: 25px;
+    display:inline-block;
 }
 .searchResultBox h3 {
   font-size: 16px;
-  margin: 22px 0 5px 0;
 }
 .searchResultBox span {
   font-size: 18px;
   font-weight: bold;
+}
+
+#logo img {
+    max-width: 100%;
 }

@@ -19,10 +19,13 @@ $(document).ready(function ($) {
 
                var source = this['_source'];
 
-               thisResult = '<div class="searchResultBox cf">';
-               thisResult += '<div class="sImg"><img src="http://www.argos.co.uk/' + source['imgUrl'] + '"></img></div>'
-               thisResult += '<h3>' + source['productTitle'] + '</h3>';
-               thisResult += '<span>£' + source['price'] + '</span></div>';
+               thisResult = '<div class="searchResultBox">'
+                                + '<img src="http://www.argos.co.uk/' + source['imgUrl'] + '">'
+                                + '<div class="description">'
+                                   + '<h3>' + source['productTitle'] + '</h3>'
+                                   + '<span>£' + source['price'] + '</span>'
+                                + '</div>'
+                             + '</div>';
 
                results.append(thisResult);
             });

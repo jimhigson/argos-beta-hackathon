@@ -9,7 +9,9 @@
     "cheerio": "^0.15.0",
     "get-json": "0.0.1",
     "colors": "^0.6.2",
-    "minimist": "0.0.8"
+    "minimist": "0.0.8",
+    "consolidate": "^0.10.0",
+    "handlebars": "^2.0.0-alpha.2"
   },
   "devDependencies": {},
   "scripts": {

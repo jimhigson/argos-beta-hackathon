@@ -1,9 +1,12 @@
-var PORT = 6677;
-var ELASTIC_SEARCH_HOST = 'http://beta.vichub.co.uk:9200/argos';
+var PORT = 6677,
+    ELASTIC_SEARCH_HOST = 'http://beta.vichub.co.uk:9200/argos',
 
-var express = require('express');
+    express = require('express'),
+    request = require('request'),
+    consolidate = require('consolidate');
+
 var app = express();
-var request = require('request');
+
 require('colors');
 
 function priceRange(query) {
@@ -30,10 +33,27 @@ function priceRange(query) {
    };
 }
 
-app
-   .use(express.static('statics'))
-   .get('/search/:term', function(req, res){
+function renderPage(res, term) {
+   res.render('page', {startTerm:(term || '')});
+}
 
+app.engine('handlebars', consolidate.handlebars);
+app.set('view engine', 'handlebars');
+app.set('views', __dirname + '/views');
+
+app
+   .get('/', function(req, res) {
+      // legacy URL (already given to some people) - redirect / to /search
+      res.redirect('/search'); 
+   })
+   .get('/search', function(req, res) {
+      renderPage(res);
+   })   
+   .get('/search/:term', function(req, res) {
+      renderPage(res, req.params.term);
+   })
+   .get('/find/:term', function(req, res){
+      
       var startTime = Date.now(),
           query = req.params.term;
       
@@ -60,8 +80,6 @@ app
          }
       };
       
-      console.log( JSON.stringify( requestBodyJson ) );
-
       request({
          
          url: ELASTIC_SEARCH_HOST + '/products/_search',
@@ -76,7 +94,8 @@ app
          responseBodyJson.timeTaken = startTime - Date.now();
          res.send(responseBodyJson);
       });
-   });
+   })
+   .use(express.static('statics'));
 
 app.listen(PORT);
 console.log('server started'.green);

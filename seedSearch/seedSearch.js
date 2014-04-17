@@ -46,7 +46,7 @@ function scrapeProductPage(productId, $) {
       summary: $('.fullDetails').html(),
       summaryText: $('.fullDetails').text(),
       imgUrl: $('#mainimage').attr('src'),
-      category:$('.category').text().trim()
+      category:$('meta[name=keywords]').attr('content').split(',')[0].trim()
    };
 }
 

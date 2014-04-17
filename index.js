@@ -37,6 +37,10 @@ function renderPage(res, term) {
    res.render('page', {startTerm:(term || '')});
 }
 
+function unencodeTerm(raw) {
+   return raw.replace(/_/g, ' ');
+}
+
 app.engine('handlebars', consolidate.handlebars);
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
@@ -50,12 +54,12 @@ app
       renderPage(res);
    })   
    .get('/search/:term', function(req, res) {
-      renderPage(res, req.params.term);
+      renderPage(res, unencodeTerm(req.params.term));
    })
    .get('/find/:term', function(req, res){
       
       var startTime = Date.now(),
-          query = req.params.term;
+          query = unencodeTerm(req.params.term);
       
       var queryTerms = priceRange(query);
       

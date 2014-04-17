@@ -4,6 +4,7 @@
 $(document).ready(function ($) {
 
    var searchBox = $('input.main-search');
+   var results = $('#auto-complete');
    
    function updateAutoComplete() {
 
@@ -13,7 +14,7 @@ $(document).ready(function ($) {
          $.ajax({
             url: searchURL
          }).done(function (data) {
-            $('#auto-complete').html('');
+            results.html('');
             $.each(data['hits']['hits'], function () {
 
                var source = this['_source'];
@@ -23,11 +24,11 @@ $(document).ready(function ($) {
                thisResult += '<h3>' + source['productTitle'] + '</h3>';
                thisResult += '<span>£' + source['price'] + '</span></div>';
 
-               $('#auto-complete').append(thisResult);
+               results.append(thisResult);
             });
          });
       } else {
-         $('#auto-complete').html('');
+         results.html('');
       }
    }
 

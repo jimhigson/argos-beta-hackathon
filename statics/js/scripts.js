@@ -3,13 +3,18 @@ $(document).ready(function ($) {
 
    var searchBox = $('input.main-search');
    var results = $('#auto-complete');
-   
+   var currentAjax = null;
+
    function updateAutoComplete() {
 
       if (searchBox.val()) {
          var searchURL = '/find/' + searchBox.val();
 
-         $.ajax({
+         if( currentAjax ) {
+            currentAjax.abort();
+         }
+
+         currentAjax = $.ajax({
             url: searchURL
          }).done(function (data) {
             results.html('');
@@ -26,6 +31,8 @@ $(document).ready(function ($) {
                              + '</div>';
 
                results.append(thisResult);
+
+               currentAjax = null;
             });
          });
       } else {

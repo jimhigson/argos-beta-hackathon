@@ -2,7 +2,7 @@
 $(document).ready(function ($) {
 
    var searchBox = $('input.main-search');
-   var results = $('#auto-complete');
+   var results = $('#results');
    var currentAjax = null;
 
    function updateAutoComplete() {
@@ -23,7 +23,7 @@ $(document).ready(function ($) {
                var source = this['_source'];
 
                thisResult =    '<div class="searchResultBox">'
-                                + '<img src="http://www.argos.co.uk/' + source['imgUrl'] + '">'
+                                + '<img data-src="http://www.argos.co.uk/' + source['imgUrl'] + '">'
                                 + '<div class="description">'
                                    + '<h3>' + source['productTitle'] + '</h3>'
                                    + '<span>£' + Number(source['price']).toFixed(2) + '</span>'
@@ -34,6 +34,8 @@ $(document).ready(function ($) {
 
                currentAjax = null;
             });
+
+            results.find('img').unveil();
          });
       } else {
          results.html('');
@@ -42,4 +44,6 @@ $(document).ready(function ($) {
 
    searchBox.keyup(updateAutoComplete);
    updateAutoComplete();
+   
+   $('#search').sticky();
 });

@@ -1,6 +1,6 @@
 var PORT = 6677,
-    //ELASTIC_SEARCH_HOST = 'http://beta.vichub.co.uk:9200/argos',
-    ELASTIC_SEARCH_HOST = 'http://localhost:9200/argos',
+    ELASTIC_SEARCH_HOST = 'http://beta.vichub.co.uk:9200/argos',
+    //ELASTIC_SEARCH_HOST = 'http://localhost:9200/argos',
 
     express = require('express'),
     request = require('request'),
@@ -65,6 +65,7 @@ app
       var queryTerms = priceRange(query);
       
       var requestBodyJson = {
+         size: 100, // how many results?
          query: {
             "filtered": {
                "query":{
@@ -92,8 +93,6 @@ app
          body: JSON.stringify( requestBodyJson )
          
       }, function(error, _, responseBodyJson) {
-         
-         console.log( JSON.parse(responseBodyJson) );
          
          res.setHeader('Content-Type', 'application/json');
          responseBodyJson.timeTaken = startTime - Date.now();

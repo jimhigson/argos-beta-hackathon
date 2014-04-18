@@ -17,6 +17,9 @@
                   "audiobook, audio book",
                   "peppa, pepper",
                   "bbq, barbecue",
+                  "pyjamas, pjs",
+                  "chrome book, chromebook",
+                  "chromecast, chromecast",
                   "mirrorless, eosm, eos m, four thirds, milc",
                   "jumbo, large",
                   "dumbell, dumbbell",
@@ -37,7 +40,7 @@
                   
                   "pine, wallnut => wood",
                   "iphone => phone",
-                  "laptop => macbook",
+                  "laptop => macbook, chromebook",
                   "handlebar => bar"
                ],
                "type": "synonym"

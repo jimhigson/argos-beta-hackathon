@@ -2,6 +2,7 @@
 
 var MAX_SIMULTANEOUS_PAGE_REQUESTS = 50;
 var MAX_REQUEST_FREQUENCY_MS = 50;
+var ELASTIC_SEARCH_URL = 'http://localhost:9200';
 
 var request = require('request');
 var cheerio = require('cheerio');
@@ -11,13 +12,31 @@ require('colors');
 var argv = require('minimist')(process.argv.slice(2));
 
 var gaveRange = (argv.startIndex !== undefined && argv.endIndex !== undefined);
-if(!argv.all && !gaveRange) {
+if(!argv.all && !argv.setup && !gaveRange) {
    console.log('not enough parameters. Call like:\n' +
+      '\tseedSearch.js --setup \n' +      
       '\tseedSearch.js --startIndex 0 --endIndex 50 \n' +
       '\tseedSearch.js --all \n ');
    process.exit(1);
 }
 
+if( argv.setup ) {
+   console.log('setting up mappings etc');
+   request({
+      url:     ELASTIC_SEARCH_URL + '/argos/',
+      method:  'PUT',
+      body:    require('fs').readFileSync('settings.json')
+   }, function(err, responseJson) {
+      if( err ) {
+         console.log(String(err).red);
+      } else {
+         console.log('done ok'.green);
+         console.log(responseJson.body);
+      }
+   });
+   
+   return;
+}
 
 function loadAllProductIds() {
    
@@ -99,7 +118,7 @@ var interval = setInterval(function() {
 }, MAX_REQUEST_FREQUENCY_MS);
 
 function elasticSearchProductUrl(productId) {
-   return 'http://localhost:9200/argos/products/' + productId;
+   return ELASTIC_SEARCH_URL + '/argos/products/' + productId;
 }
 
 function requestSuccessful(res) {
@@ -126,7 +145,7 @@ function handleElasticSearchPutResponse(error, res, body) {
    console.log(String(itemsSoFar).blue, '(' + String(percent).green + '%) PUT item', String(url));
 
    if( pendingRequests == 0 && productsIdsToRequest.length == 0 ) {
-      console.log('All products pushed to ElasticSearch');
+      console.log('All products PUT to ElasticSearch');
       process.exit(0);
    }
    
@@ -144,7 +163,7 @@ function spiderNextProduct() {
       }
       
       var url = elasticSearchProductUrl(productId);
-
+      
       request({
          url: url,
          method:'PUT',

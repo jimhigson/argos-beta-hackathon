@@ -1,5 +1,6 @@
 var PORT = 6677,
-    ELASTIC_SEARCH_HOST = 'http://beta.vichub.co.uk:9200/argos',
+    //ELASTIC_SEARCH_HOST = 'http://beta.vichub.co.uk:9200/argos',
+    ELASTIC_SEARCH_HOST = 'http://localhost:9200/argos',
 
     express = require('express'),
     request = require('request'),

@@ -65,6 +65,7 @@ app
       var queryTerms = priceRange(query);
       
       var requestBodyJson = {
+         min_score:0.4,
          size: 100, // how many results?
          query: {
             "filtered": {

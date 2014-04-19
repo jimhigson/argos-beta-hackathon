@@ -49,7 +49,7 @@ app.set('views', __dirname + '/views');
 app
    .get('/', function(req, res) {
       // legacy URL (already given to some people) - redirect / to /search
-      res.redirect('/search'); 
+      res.redirect('/search');
    })
    .get('/search', function(req, res) {
       renderPage(res);
@@ -57,55 +57,11 @@ app
    .get('/search/:term', function(req, res) {
       renderPage(res, unencodeTerm(req.params.term));
    })
+   .get('/find/:category/:term', function(req, res){
+      serveJson(req, res);
+   })   
    .get('/find/:term', function(req, res){
-      
-      var query = unencodeTerm(req.params.term);
-      
-      var queryTerms = priceRange(query);
-      
-      var requestBodyJson = {
-         min_score:0.4,
-         size: 100, // how many results?
-         "highlight" : {
-            "fields" : {
-               "productTitle" : {},
-               "summaryText" : {}
-            }
-         },
-         query: {
-            "filtered": {
-               "query":{
-                  "query_string": {
-                     "fields": ["productId^4", "productTitle^5", "category^3", "summaryText"],
-                     "query": queryTerms.term + '*'
-                  }
-               },
-               "filter": {
-                  "range": {
-                     "price": {
-                        "from": queryTerms.minPrice,
-                        "to": queryTerms.maxPrice
-                     }
-                  }
-               }
-            }
-         }
-      };
-      
-      request({
-         
-         url: ELASTIC_SEARCH_HOST + '/products/_search',
-         method:'GET',
-         body: JSON.stringify( requestBodyJson )
-         
-      }, function(error, _, responseBodyJson) {
-         
-         var responseObj = JSON.parse(responseBodyJson);
-         responseObj.categories = analyseCategories(responseObj);
-         
-         res.setHeader('Content-Type', 'application/json');
-         res.send(responseObj);
-      });
+      serveJson(req, res);
    })
    .use(express.static('statics'));
 
@@ -131,4 +87,56 @@ function analyseCategories( response ) {
       return b.number - a.number;
    });
    
+}
+
+function serveJson(req, res) {
+   var query = unencodeTerm(req.params.term);
+
+   var queryTerms = priceRange(query);
+
+   var requestBodyJson = {
+      min_score: 0.4,
+      size: 100, // how many results?
+      "highlight": {
+         "fields": {
+            "productTitle": {},
+            "summaryText": {}
+         }
+      },
+      query: {
+         "filtered": {
+            "query": {
+               "query_string": {
+                  "fields": ["productId^4", "productTitle^5", "category^3", "summaryText"],
+                  "query": queryTerms.term + '*'
+               }
+            },
+            "filter": {
+               "range": {
+                  "price": {
+                     "from": queryTerms.minPrice,
+                     "to": queryTerms.maxPrice
+                  }
+               }
+            }
+         }
+      }
+   };
+   
+   request({
+
+      url: ELASTIC_SEARCH_HOST + '/products/_search',
+      method: 'GET',
+      body: JSON.stringify(requestBodyJson)
+
+   }, function (error, _, responseBodyJson) {
+
+      console.log(responseBodyJson);
+      
+      var responseObj = JSON.parse(responseBodyJson);
+      responseObj.categories = analyseCategories(responseObj);
+
+      res.setHeader('Content-Type', 'application/json');
+      res.send(responseObj);
+   });
 }

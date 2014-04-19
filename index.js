@@ -93,6 +93,13 @@ function serveJson(req, res) {
    var query = unencodeTerm(req.params.term);
 
    var queryTerms = priceRange(query);
+   
+   console.log(
+      'Searching for',
+      ("'" + req.params.term + "'").blue,
+      'in category',
+      ("'" + req.params.category + "'").blue
+   );
 
    var requestBodyJson = {
       min_score: 0.4,

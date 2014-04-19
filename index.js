@@ -101,11 +101,9 @@ app
       }, function(error, _, responseBodyJson) {
          
          var responseObj = JSON.parse(responseBodyJson);
+         responseObj.categories = analyseCategories(responseObj);
          
          res.setHeader('Content-Type', 'application/json');
-
-         responseObj.categories = analyseCategories(responseObj); 
-         
          res.send(responseObj);
       });
    })

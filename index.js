@@ -1,6 +1,6 @@
 var PORT = 6677,
-    ELASTIC_SEARCH_HOST = 'http://beta.vichub.co.uk:9200/argos',
-    //ELASTIC_SEARCH_HOST = 'http://localhost:9200/argos',
+    //ELASTIC_SEARCH_HOST = 'http://beta.vichub.co.uk:9200/argos',
+    ELASTIC_SEARCH_HOST = 'http://localhost:9200/argos',
 
     express = require('express'),
     request = require('request'),
@@ -59,19 +59,24 @@ app
    })
    .get('/find/:term', function(req, res){
       
-      var startTime = Date.now(),
-          query = unencodeTerm(req.params.term);
+      var query = unencodeTerm(req.params.term);
       
       var queryTerms = priceRange(query);
       
       var requestBodyJson = {
          min_score:0.4,
          size: 100, // how many results?
+         "highlight" : {
+            "fields" : {
+               "productTitle" : {},
+               "summaryText" : {}
+            }
+         },
          query: {
             "filtered": {
                "query":{
                   "query_string": {
-                     "fields": ["productId^8", "productTitle^8", "category^8", "summaryText"],
+                     "fields": ["productId^4", "productTitle^5", "category^3", "summaryText"],
                      "query": queryTerms.term + '*'
                   }
                },
@@ -95,12 +100,37 @@ app
          
       }, function(error, _, responseBodyJson) {
          
+         var responseObj = JSON.parse(responseBodyJson);
+         
          res.setHeader('Content-Type', 'application/json');
-         responseBodyJson.timeTaken = startTime - Date.now();
-         res.send(responseBodyJson);
+
+         responseObj.categories = analyseCategories(responseObj); 
+         
+         res.send(responseObj);
       });
    })
    .use(express.static('statics'));
 
 app.listen(PORT);
 console.log('server started'.green);
+
+function analyseCategories( response ) {
+   
+   var cats = {},
+       orderedCats = [];
+   
+   response.hits.hits.forEach(function( item ) {
+
+      var categoryName = item._source.category; 
+      cats[categoryName] = cats[categoryName]? cats[categoryName]+1 : 1; 
+   });
+
+   for( var name in cats ) {
+      orderedCats.push( {name: name, number:cats[name]} );
+   }
+   
+   return orderedCats.sort(function(a,b) {
+      return b.number - a.number;
+   });
+   
+}

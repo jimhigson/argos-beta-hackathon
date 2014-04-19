@@ -362,6 +362,10 @@ body {
 .searchResultBox h3 {
   font-size: 16px;
 }
+.searchResultBox h3 em {
+  font-weight: bold;
+  font-style: normal;
+}
 .searchResultBox span {
   font-size: 18px;
   font-weight: bold;

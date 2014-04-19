@@ -18,15 +18,15 @@ $(document).ready(function ($) {
             url: searchURL
          }).done(function (data) {
             results.html('');
-            $.each(data.hits.hits, function () {
+            data.hits.hits.forEach( function (hit) {
 
-               var productTitleHtml = (this.highlight && this.highlight.productTitle) || this._source.productTitle;
+               var productTitleHtml = (hit.highlight && hit.highlight.productTitle) || this._source.productTitle;
                
                thisResult =    '<div class="searchResultBox">'
-                                + '<img data-src="http://www.argos.co.uk/' + this._source['imgUrl'] + '">'
+                                + '<img data-src="http://www.argos.co.uk/' + hit._source['imgUrl'] + '">'
                                 + '<div class="description">'
                                    + '<h3>' + productTitleHtml + '</h3>'
-                                   + '<span>£' + Number(this._source['price']).toFixed(2) + '</span>'
+                                   + '<span>£' + Number(hit._source['price']).toFixed(2) + '</span>'
                                 + '</div>'
                              + '</div>';
 

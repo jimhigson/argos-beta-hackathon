@@ -6,10 +6,17 @@ $(document).ready(function ($) {
    var categories = $('#categories');
    var currentAjax = null;
 
+   function sanitiseQueryTerm(term) {
+      return term.trim().replace(/\s+/g, '_').replace(/\//g, '');
+   }
+   
    function updateAutoComplete() {
 
-      if (searchBox.val()) {
-         var searchURL = '/find/' + searchBox.val();
+      var queryTerm = sanitiseQueryTerm(searchBox.val());
+      
+      if (queryTerm) {
+         
+         var searchURL = '/find/' + queryTerm;
 
          if( currentAjax ) {
             currentAjax.abort();
@@ -37,7 +44,6 @@ $(document).ready(function ($) {
             });
             results.find('img').unveil();
 
-            
             categories.html('');
             
             if( data.categories.length > 1 ) {

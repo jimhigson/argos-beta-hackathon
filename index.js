@@ -90,7 +90,8 @@ function analyseCategories( response ) {
 }
 
 function serveJson(req, res) {
-   var query = unencodeTerm(req.params.term);
+   var query = unencodeTerm(req.params.term),
+       category = req.params.category;
 
    var queryTerms = priceRange(query);
    
@@ -98,7 +99,11 @@ function serveJson(req, res) {
       'Searching for',
       ("'" + req.params.term + "'").blue,
       'in category',
-      ("'" + req.params.category + "'").blue
+      ("'" + req.params.category + "'").blue,
+      'between',
+      String(queryTerms.minPrice).blue,
+      'and',
+      String(queryTerms.maxPrice).blue
    );
 
    var requestBodyJson = {
@@ -111,24 +116,33 @@ function serveJson(req, res) {
          }
       },
       query: {
-         "filtered": {
-            "query": {
-               "query_string": {
+            "query_string": {
                   "fields": ["productId^4", "productTitle^5", "category^3", "summaryText"],
                   "query": queryTerms.term + '*'
                }
-            },
-            "filter": {
-               "range": {
+      },
+
+      "filter": {
+         
+         and:[
+            {  "range": {
                   "price": {
                      "from": queryTerms.minPrice,
                      "to": queryTerms.maxPrice
                   }
                }
             }
-         }
+         ]
       }
    };
+   
+   if( category ) {
+      requestBodyJson.filter.and.push({
+         term: {
+            category: category.toLowerCase()
+         }
+      });
+   }
    
    request({
 
@@ -137,13 +151,18 @@ function serveJson(req, res) {
       body: JSON.stringify(requestBodyJson)
 
    }, function (error, _, responseBodyJson) {
-
-      console.log(responseBodyJson);
-      
+            
       var responseObj = JSON.parse(responseBodyJson);
-      responseObj.categories = analyseCategories(responseObj);
+      responseObj.request = requestBodyJson;
 
       res.setHeader('Content-Type', 'application/json');
-      res.send(responseObj);
+      
+      if( !responseObj.error ) {
+         responseObj.categories = analyseCategories(responseObj);
+
+         res.send(responseObj);
+      } else {
+         res.send(responseObj.status, responseObj);
+      }
    });
 }

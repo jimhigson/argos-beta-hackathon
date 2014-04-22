@@ -58,7 +58,8 @@ function scrapeProductPrice($) {
 
 function scrapeProductPage(productId, $) {
 
-   var metaData = $('meta[name=keywords]').attr('content');
+   var metaData = $('meta[name=keywords]').attr('content'),
+       category = metaData && metaData.split(',')[0].trim();
    
    return {
       productId: productId,
@@ -67,7 +68,7 @@ function scrapeProductPage(productId, $) {
       summary: $('.fullDetails').html(),
       summaryText: $('.fullDetails').text(),
       imgUrl: $('#mainimage').attr('src'),
-      category:metaData && metaData.split(',')[0].trim()
+      category:    category
    };
 }
 

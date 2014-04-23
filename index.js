@@ -39,7 +39,11 @@ function renderPage(res, term) {
 }
 
 function unencodeTerm(raw) {
-   return raw.replace(/_/g, ' ');
+   if( !raw ) {
+      return raw;
+   } else {
+      return raw.replace(/_/g, ' ');
+   }
 }
 
 app.engine('handlebars', consolidate.handlebars);
@@ -54,45 +58,31 @@ app
    .get('/search', function(req, res) {
       renderPage(res);
    })   
-   .get('/search/:term', function(req, res) {
-
-      console.log(
-         'Searching for',
-         ("'" + req.params.term + "'").blue,
-         'in category',
-         ("'" + req.params.category + "'").blue
-      );
-      
-      var term = unencodeTerm(req.params.term);
-      
-      if( req.query.json == 'true' ) {
-         serveJson(req, res, term);
-      } else {
-         renderPage(res, term);
-      }
-   })
-   .get('/search/:category/:term', function(req, res) {
-
-      console.log(
-         'Searching for',
-         ("'" + req.params.term + "'").blue,
-         'in category',
-         ("'" + req.params.category + "'").blue
-      );      
-      
-      var term     = unencodeTerm(req.params.term),
-          category = unencodeTerm(req.params.category);
-      
-      if( req.query.json == 'true' ) {
-         serveJson(req, res, term, category);
-      } else {
-         renderPage(res, term, category);
-      }
-   })   
+   .get('/search/:term',            servePageOrJson )
+   .get('/search/:category/:term',  servePageOrJson )
    .use(express.static('statics'));
 
 app.listen(PORT);
 console.log('server started'.green);
+
+function servePageOrJson(req, res) {
+
+   var term     = unencodeTerm(req.params.term),
+       category = unencodeTerm(req.params.category);
+   
+   console.log(
+      'Searching for',
+      ("'" + term + "'").blue,
+      'in category',
+      ("'" + category + "'").blue
+   );
+
+   if( req.query.json == 'true' ) {
+      serveJson(req, res, term, category);
+   } else {
+      renderPage(res, term, category);
+   }
+}
 
 function analyseCategories( response ) {
    

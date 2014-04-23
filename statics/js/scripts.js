@@ -32,7 +32,7 @@ $(document).ready(function ($) {
             results.html('');
             data.hits.hits.forEach( function (hit) {
 
-               var productTitleHtml = (hit.highlight && hit.highlight.productTitle) || this._source.productTitle;
+               var productTitleHtml = (hit.highlight && hit.highlight.productTitle) || hit._source.productTitle;
                
                var hitHtml =    '<div class="searchResultBox">'
                                 + '<img data-src="http://www.argos.co.uk/' + hit._source['imgUrl'] + '">'

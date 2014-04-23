@@ -55,14 +55,40 @@ app
       renderPage(res);
    })   
    .get('/search/:term', function(req, res) {
-      renderPage(res, unencodeTerm(req.params.term));
+
+      console.log(
+         'Searching for',
+         ("'" + req.params.term + "'").blue,
+         'in category',
+         ("'" + req.params.category + "'").blue
+      );
+      
+      var term = unencodeTerm(req.params.term);
+      
+      if( req.query.json == 'true' ) {
+         serveJson(req, res, term);
+      } else {
+         renderPage(res, term);
+      }
    })
-   .get('/find/:category/:term', function(req, res){
-      serveJson(req, res);
+   .get('/search/:category/:term', function(req, res) {
+
+      console.log(
+         'Searching for',
+         ("'" + req.params.term + "'").blue,
+         'in category',
+         ("'" + req.params.category + "'").blue
+      );      
+      
+      var term     = unencodeTerm(req.params.term),
+          category = unencodeTerm(req.params.category);
+      
+      if( req.query.json == 'true' ) {
+         serveJson(req, res, term, category);
+      } else {
+         renderPage(res, term, category);
+      }
    })   
-   .get('/find/:term', function(req, res){
-      serveJson(req, res);
-   })
    .use(express.static('statics'));
 
 app.listen(PORT);
@@ -86,29 +112,16 @@ function analyseCategories( response ) {
    return orderedCats.sort(function(a,b) {
       return b.number - a.number;
    });
-   
 }
 
-function serveJson(req, res) {
-   var query = unencodeTerm(req.params.term),
-       category = req.params.category;
+function serveJson(req, res, query, category) {
 
    var queryTerms = priceRange(query);
    
-   console.log(
-      'Searching for',
-      ("'" + req.params.term + "'").blue,
-      'in category',
-      ("'" + req.params.category + "'").blue,
-      'between',
-      String(queryTerms.minPrice).blue,
-      'and',
-      String(queryTerms.maxPrice).blue
-   );
-
    var requestBodyJson = {
       min_score: 0.4,
       size: 100, // how many results?
+      
       "highlight": {
          "fields": {
             "productTitle": {},
@@ -123,7 +136,6 @@ function serveJson(req, res) {
       },
 
       "filter": {
-         
          and:[
             {  "range": {
                   "price": {

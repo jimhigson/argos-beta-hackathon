@@ -10,13 +10,17 @@ $(document).ready(function ($) {
       return term.trim().replace(/\s+/g, '_').replace(/\//g, '');
    }
    
+   function makeInputUrlFriendly(input) {
+      return input.replace(/\s/g, '_');
+   }
+   
    function updateAutoComplete() {
 
       var queryTerm = sanitiseQueryTerm(searchBox.val());
       
       if (queryTerm) {
          
-         var searchURL = '/find/' + queryTerm;
+         var searchURL = '/search/' + queryTerm + '?json=true';
 
          if( currentAjax ) {
             currentAjax.abort();
@@ -48,11 +52,12 @@ $(document).ready(function ($) {
             
             if( data.categories.length > 1 ) {
                data.categories.forEach(function (cat) {
-
-                  var catHtml = '<span class="category">' +
-                     '<a href="#">' + cat.name + '</a>' +
-                     '<button class="close">' +
-                     '</span>';
+                  var catNameInUrl = makeInputUrlFriendly(cat.name),
+                      catLink = '/search/' + catNameInUrl + '/' + queryTerm,
+                      catHtml = '<span class="category">' +
+                        '<a href="' + catLink + '">' + cat.name + '</a>' +
+                        //'<button class="close">' +
+                        '</span>';
 
                   categories.append(catHtml);
                });

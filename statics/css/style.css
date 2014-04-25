@@ -25,12 +25,12 @@ body {
 #search {
   height: 75px;
   width: 100%;
-  background: #fff;
+  background: rgba(255,255,255,0.9);
   font-size: 30px;
   z-index:1;
 }
 #search-sticky-wrapper.is-sticky #search {
-    border-bottom: 2px #e32219 solid; 
+    border-bottom: 2px #333333 solid; 
 }
 
 #searchHelp,  #searchInner, #results {

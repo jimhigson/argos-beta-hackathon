@@ -32,12 +32,13 @@ $(document).ready(function ($) {
             results.html('');
             data.hits.hits.forEach( function (hit) {
 
-               var productTitleHtml = (hit.highlight && hit.highlight.productTitle) || hit._source.productTitle;
+               var productTitleHtml = (hit.highlight && hit.highlight.productTitle) || hit._source.productTitle,
+                   productUrl = 'http://www.argos.co.uk/static/Product/partNumber/' + hit._source.productId + '.htm';
                
                var hitHtml =    '<div class="searchResultBox">'
                                 + '<img data-src="http://www.argos.co.uk/' + hit._source['imgUrl'] + '">'
                                 + '<div class="description">'
-                                   + '<h3>' + productTitleHtml + '</h3>'
+                                   + '<h3><a href="'+ productUrl +'">' + productTitleHtml + '</a></h3>'
                                    + '<span>£' + Number(hit._source['price']).toFixed(2) + '</span>'
                                 + '</div>'
                              + '</div>';

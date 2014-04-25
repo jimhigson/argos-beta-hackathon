@@ -1,26 +1,31 @@
 
 $(document).ready(function ($) {
 
-   var searchBox = $('input.main-search');
-   var storeSearch = $('store-search');
+   var currentStore;
+   
+   var searchBox = $('input.mainSearch');
+   var storeSearch = $('.storeSearch');
    var results = $('#results');
+   var storesAutocomplete = $('#storesAutocomplete');
    var categories = $('#categories');
    var currentAjax = null;
 
-   function handleAjaxResult(data) {
+   function handleProductAjaxResult(data) {
       results.html('');
-      data.hits.hits.forEach( function (hit) {
+      var hits = data.hits.hits;
+      hits.forEach( function (hit) {
 
-         var productTitleHtml = (hit.highlight && hit.highlight.productTitle) || hit._source.productTitle,
-            productUrl = 'http://www.argos.co.uk/static/Product/partNumber/' + hit._source.productId + '.htm';
+         var product = hit._source,
+             productTitleHtml = (hit.highlight && hit.highlight.productTitle) || product.productTitle,
+             productUrl = 'http://www.argos.co.uk/static/Product/partNumber/' + product.productId + '.htm';
 
-         var hitHtml =    '<div class="searchResultBox">'
-            + '<img data-src="http://www.argos.co.uk/' + hit._source['imgUrl'] + '">'
-            + '<div class="description">'
-            + '<h3><a href="'+ productUrl +'">' + productTitleHtml + '</a></h3>'
-            + '<span>£' + Number(hit._source['price']).toFixed(2) + '</span>'
-            + '</div>'
-            + '</div>';
+         var hitHtml =     '<div class="searchResultBox" data-productId="' + product.productId + '">'
+                           + '<img data-src="http://www.argos.co.uk/' + product['imgUrl'] + '">'
+                           + '<div class="description">'
+                           + '<h3><a href="'+ productUrl +'">' + productTitleHtml + '</a></h3>'
+                           + '<span>£' + Number(product['price']).toFixed(2) + '</span>'
+                           + '</div>'
+                           + '</div>';
 
          results.append(hitHtml);
 
@@ -28,6 +33,7 @@ $(document).ready(function ($) {
       });
       results.find('img').unveil();
 
+      showAvailability();
       /*
        if( data.categories.length > 1 ) {
        data.categories.forEach(function (cat) {
@@ -43,6 +49,38 @@ $(document).ready(function ($) {
        }
 
       categories.html('');*/
+   }
+   
+   function showAvailability() {
+      // request availability of stock items if we have a store:
+      if( currentStore ) {
+         var productList = $('.searchResultBox').toArray().map(function(ele) {
+            return $(ele).data('productid');
+         });
+         
+         var availabilityUrl = '/stockInfo/' + currentStore + '/' + productList.join(',');
+         
+         console.log('I need to hit', availabilityUrl);
+         /*$.ajax( availabilityUrl, function() {
+
+          });*/
+      }
+   }
+   
+   function handleStoreRequest(data) {
+      storesAutocomplete.html('');   
+      data.hits.hits.forEach( function (hit) {
+         var store = hit._source;
+         
+         
+         var html =     '<div class="storeResult" ' +
+            '                  data-storeId="' + store.id + '"' + 
+            '                  data-name="' + store.name + '"' +
+                         '">' + 
+                           store.name + 
+                        '</div>';   
+         storesAutocomplete.append(html);   
+      });   
    }   
    
    function sanitiseQueryTerm(term) {
@@ -67,20 +105,56 @@ $(document).ready(function ($) {
 
          currentAjax = $.ajax({
             url: searchURL
-         }).done(handleAjaxResult);
+         }).done(handleProductAjaxResult);
       } else {
          results.html('');
       }
    }
    
-   function updateStoreAutoComplete() {
-      console.log(this);
+   
+   function updateStoreKeyUp() {
+      
+      var queryTerm = sanitiseQueryTerm(storeSearch.val());
+
+      if (queryTerm) {
+
+         storesAutocomplete.show();
+
+         var storesURL = '/stores/' + queryTerm;
+
+         if( currentAjax ) {
+            currentAjax.abort();
+         }
+
+         currentAjax = $.ajax({
+            url: storesURL
+         }).done(handleStoreRequest);
+      } else {
+         storesAutocomplete.html('');
+      }
+   }
+   
+   function hideStoreAutocomplete() {
+      storesAutocomplete.hide();
    }
 
    searchBox.keyup(updateAutoComplete);
-   storeSearch.keyup(updateStoreAutoComplete);
+   storeSearch.keyup(updateStoreKeyUp);
+   storeSearch.focus(function() {
+      storeSearch.val('');
+   });
    
    updateAutoComplete();
-   
    $('#search').sticky();
+   
+   $('#storesAutocomplete').on('click', '.storeResult', function( evt ) {
+      currentStore = $(event.target).data('storeid');
+
+      console.log('your store is now', currentStore);
+      
+      storeSearch.val( $(event.target).data('name') );
+
+      showAvailability();
+      hideStoreAutocomplete();
+   });
 });

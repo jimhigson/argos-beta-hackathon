@@ -13,7 +13,7 @@ body {
 #hero {
   padding: 50px 0;
   width: 100%;
-  background: #e32219;
+  background: #ffffff;
 }
 #logo {
   width: 107px;
@@ -24,37 +24,50 @@ body {
   height: 75px;
   width: 100%;
   background: #fff;
+  font-size: 30px;
   z-index:1;
 }
 #search-sticky-wrapper.is-sticky #search {
     border-bottom: 2px #e32219 solid; 
 }
 
+#searchHelp,  #searchInner {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 8px 20px 8px 0px;
+
+}
+
 #searchInner {
-  max-width: 940px;
-  margin: 0 auto;
-  padding: 8px 20px 8px 0px;
   position: relative;
 }
+
 .searchIcon {
   position: absolute;
   top: 24px;
-}
-input {
-  padding: 11px 0 11px 0px;
-  font-size: 30px;
-  letter-spacing: 0.6px;
-  border: 0;
-}
-input.main-search {
-  padding-left: 45px;
-  width: 70%;
+  right: 0px;
 }
 
-input.store-search {
+input {
+  padding: 11px 0 11px 11px;
+  font-size: 30px;
+  letter-spacing: 0.6px;
+  border: solid 1px #c2c2c2;
+}
+
+input.mainSearch {
+  width: 50%;
+}
+
+input.storeSearch {
   position: absolute;
-  right: 0;
-  width: 20%;
+  right: 40px;
+  width: 40%;
+}
+
+#searchHelp {
+    font-size:18px;
+    font-style: italic;
 }
 
 #auto-complete {
@@ -101,5 +114,16 @@ input.store-search {
 }
 .category button {
     margin-left: 0.2em;
+}
+
+#storesAutocomplete {
+    position:absolute;
+    right:0;
+    z-index:1;
+}
+
+#storesAutocomplete {
+    width:40%;
+    background-color:white;
 }
 

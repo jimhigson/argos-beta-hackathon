@@ -70,12 +70,17 @@ $(document).ready(function ($) {
                
             result.forEach(function( productAvailability ) {
 
+               var productElement = $('[data-productId=' + productAvailability.partNumber + ']');
+               
                if( productAvailability.availability == 'out-of-stock' ) {
-                  var productElement = $('[data-productId=' + productAvailability.partNumber + ']');
+                  
                   
                   productElement.addClass('outOfStock');
                   
                   console.log(productAvailability.partNumber + ' is out of stock');
+               } else {
+
+                  productElement.removeClass('outOfStock');
                }
             });
                

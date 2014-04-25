@@ -53,7 +53,7 @@ $(document).ready(function ($) {
    
    function showAvailability() {
       // request availability of stock items if we have a store:
-      if( currentStore ) {
+      if( currentStore && $('.searchResultBox').length > 0 ) {
          var productList = $('.searchResultBox').toArray().map(function(ele) {
             return $(ele).data('productid');
          });

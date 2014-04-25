@@ -44,6 +44,18 @@ body {
   position: relative;
 }
 
+#searchInner img.logo {
+    width: 63px;
+    position: absolute;
+    left: -73px;
+    top: 6px;
+    opacity:0;
+    transition:opacity 0.5s;
+}
+.is-sticky #searchInner img.logo {
+    opacity:1;
+}
+
 .searchIcon {
   position: absolute;
   top: 24px;

@@ -94,9 +94,12 @@ $(document).ready(function ($) {
    
    
    function updateStoreKeyUp() {
+      
       var queryTerm = sanitiseQueryTerm(storeSearch.val());
 
       if (queryTerm) {
+
+         storesAutocomplete.show();
 
          var storesURL = '/stores/' + queryTerm;
 
@@ -111,9 +114,16 @@ $(document).ready(function ($) {
          storesAutocomplete.html('');
       }
    }
+   
+   function hideStoreAutocomplete() {
+      storesAutocomplete.hide();
+   }
 
    searchBox.keyup(updateAutoComplete);
    storeSearch.keyup(updateStoreKeyUp);
+   storeSearch.blur(function(){
+      window.setTimeout(hideStoreAutocomplete, 100);
+   });
    
    updateAutoComplete();
    
@@ -123,7 +133,9 @@ $(document).ready(function ($) {
       currentStore = $(event.target).data('storeid');
 
       storeSearch.val( $(event.target).data('name') );
+
+      hideStoreAutocomplete();
       
-      console.log('the store is now', currentStore);
+      console.log('your store is now', currentStore);
    });
 });

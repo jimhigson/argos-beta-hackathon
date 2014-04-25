@@ -4,11 +4,11 @@ $(document).ready(function ($) {
    var searchBox = $('input.mainSearch');
    var storeSearch = $('.storeSearch');
    var results = $('#results');
-   var storeResults = $('#stores');
+   var storesAutocomplete = $('#storesAutocomplete');
    var categories = $('#categories');
    var currentAjax = null;
 
-   function handleAjaxResult(data) {
+   function handleProductAjaxResult(data) {
       results.html('');
       data.hits.hits.forEach( function (hit) {
 
@@ -44,6 +44,14 @@ $(document).ready(function ($) {
        }
 
       categories.html('');*/
+   }
+   
+   function handleStoreRequest(data) {
+      storesAutocomplete.html('');   
+      data.hits.hits.forEach( function (hit) {   
+         var html =  '<div class="storeResult">' + hit._source.name + '</div>';   
+         storesAutocomplete.append(html);   
+      });   
    }   
    
    function sanitiseQueryTerm(term) {
@@ -68,19 +76,12 @@ $(document).ready(function ($) {
 
          currentAjax = $.ajax({
             url: searchURL
-         }).done(handleAjaxResult);
+         }).done(handleProductAjaxResult);
       } else {
          results.html('');
       }
    }
    
-   function handleStoreRequest(data) {
-      storeResults.html('');
-      data.hits.hits.forEach( function (hit) {
-         var html =  '<div class="storeResult">' + hit._source.name + '</div>';
-         storeResults.append(html);
-      });
-   }
    
    function updateStoreAutoComplete() {
       var queryTerm = sanitiseQueryTerm(storeSearch.val());
@@ -97,7 +98,7 @@ $(document).ready(function ($) {
             url: storesURL
          }).done(handleStoreRequest);
       } else {
-         storeResults.html('');
+         storesAutocomplete.html('');
       }
    }
 

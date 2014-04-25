@@ -121,12 +121,8 @@ $(document).ready(function ($) {
 
    searchBox.keyup(updateAutoComplete);
    storeSearch.keyup(updateStoreKeyUp);
-   storeSearch.blur(function(){
-      window.setTimeout(hideStoreAutocomplete, 100);
-   });
    
    updateAutoComplete();
-   
    $('#search').sticky();
    
    $('#storesAutocomplete').on('click', '.storeResult', function( evt ) {

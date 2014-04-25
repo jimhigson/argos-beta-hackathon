@@ -14,6 +14,8 @@ body {
   padding: 50px 0;
   width: 100%;
   background: #ffffff;
+  font-size:18px;
+  font-style: italic;
 }
 #logo {
   width: 107px;
@@ -31,7 +33,7 @@ body {
     border-bottom: 2px #e32219 solid; 
 }
 
-#searchHelp,  #searchInner {
+#searchHelp,  #searchInner, #results {
     max-width: 940px;
     margin: 0 auto;
     padding: 8px 20px 8px 0px;
@@ -65,42 +67,49 @@ input.storeSearch {
   width: 40%;
 }
 
-#searchHelp {
-    font-size:18px;
-    font-style: italic;
-}
 
 #auto-complete {
   padding: 20px;
 }
+
+
 .searchResultBox {
   background: #fff;
-  margin: 5px auto 0 auto;
-  width:100%;
-  max-width: 940px;
-  position: relative;
-  color: #111111;
+  width: 200px;
+  height: 240px;
+  margin: 10px 10px 0px 0px;
+  padding: 10px;
+  float: left;
+  color: #00ffff;
 }
+
 .searchResultBox img {
-  margin: 5px 5px 5px 20px;
-  width: 60px;
-  height:72px;
+  width: 200px;
+  height: 200px;
 }
 .searchResultBox .description {
-    margin: 0 0 5px 25px;
-    position:absolute;
-    top: 25px;
     display:inline-block;
+    font-size: 11px;
+    height: 18px;
+    padding-top: 10px;
 }
+
+.searchResultBox a  {
+    color: #000;
+    text-decoration: none;
+}
+
 .searchResultBox h3 {
-  font-size: 16px;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 200px;
+    margin-bottom: 5px;
 }
-.searchResultBox h3 em {
-  font-weight: bold;
-  font-style: normal;
-}
+
 .searchResultBox span {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
 }
 

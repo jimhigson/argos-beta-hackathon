@@ -14,16 +14,17 @@ $(document).ready(function ($) {
       results.html('');
       data.hits.hits.forEach( function (hit) {
 
-         var productTitleHtml = (hit.highlight && hit.highlight.productTitle) || hit._source.productTitle,
-            productUrl = 'http://www.argos.co.uk/static/Product/partNumber/' + hit._source.productId + '.htm';
+         var product = hit._source,
+             productTitleHtml = (hit.highlight && hit.highlight.productTitle) || product.productTitle,
+             productUrl = 'http://www.argos.co.uk/static/Product/partNumber/' + product.productId + '.htm';
 
-         var hitHtml =    '<div class="searchResultBox">'
-            + '<img data-src="http://www.argos.co.uk/' + hit._source['imgUrl'] + '">'
-            + '<div class="description">'
-            + '<h3><a href="'+ productUrl +'">' + productTitleHtml + '</a></h3>'
-            + '<span>£' + Number(hit._source['price']).toFixed(2) + '</span>'
-            + '</div>'
-            + '</div>';
+         var hitHtml =     '<div class="searchResultBox" data-productId="' + product.productId + '">'
+                           + '<img data-src="http://www.argos.co.uk/' + product['imgUrl'] + '">'
+                           + '<div class="description">'
+                           + '<h3><a href="'+ productUrl +'">' + productTitleHtml + '</a></h3>'
+                           + '<span>£' + Number(product['price']).toFixed(2) + '</span>'
+                           + '</div>'
+                           + '</div>';
 
          results.append(hitHtml);
 

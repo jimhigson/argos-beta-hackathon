@@ -20,11 +20,13 @@ $(document).ready(function ($) {
              productUrl = 'http://www.argos.co.uk/static/Product/partNumber/' + product.productId + '.htm';
 
          var hitHtml =     '<div class="searchResultBox" data-productId="' + product.productId + '">'
+                           + '<a href="'+ productUrl +'">'
                            + '<img data-src="http://www.argos.co.uk/' + product['imgUrl'] + '">'
                            + '<div class="description">'
-                           + '<h3><a href="'+ productUrl +'">' + productTitleHtml + '</a></h3>'
+                           + '<h3>' + productTitleHtml + '</h3>'
                            + '<span>£' + Number(product['price']).toFixed(2) + '</span>'
                            + '</div>'
+                           + '</a>'
                            + '</div>';
 
          results.append(hitHtml);

@@ -145,4 +145,12 @@ input.storeSearch {
 
 input:focus 
 {   outline:#E6E6E6 Solid 4px;
-} 
+}
+
+.searchResultBox:hover {
+    outline:#c2c2c2 Solid 1px;
+}
+
+.searchResultBox em {
+    font-weight: bold;
+}

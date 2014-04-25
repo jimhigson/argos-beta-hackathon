@@ -4,7 +4,8 @@ var PORT = 6677,
 
     express = require('express'),
     request = require('request'),
-    consolidate = require('consolidate');
+    consolidate = require('consolidate'),
+    parseString = require('xml2js').parseString;
 
 var app = express();
 
@@ -61,6 +62,7 @@ app
    .get('/search/:term',            servePageOrJson )
    .get('/search/:category/:term',  servePageOrJson )
    .get('/stores/:term', serveStoreJson)
+   .get('/stockInfo/:storeNumber/:partNumbers', getStockInfo )
    .use(express.static('statics'));
 
 app.listen(PORT);
@@ -183,11 +185,71 @@ function serveJson(req, res, query, category) {
       res.setHeader('Content-Type', 'application/json');
       
       if( !responseObj.error ) {
+         // Analyse categories
          responseObj.categories = analyseCategories(responseObj);
+
+         // Clean up JSON
+         for(var i = 0; i < responseObj.hits.hits.length; ++i) {
+            delete responseObj.hits.hits[i]._source.summary;
+            delete responseObj.hits.hits[i]._source.summaryText;
+            //delete responseObj.hits.hits[i].highlight.summaryText;
+         }
 
          res.send(responseObj);
       } else {
          res.send(responseObj.status, responseObj);
       }
+   });
+}
+
+function getStockInfo(req, res) {
+
+   var partNumbers = req.params.partNumbers.split(',');
+   var storeNumber = req.params.storeNumber;
+   var avilabilityMap = [];
+
+   var reponseXML = makeXMLRequestBody(partNumbers, storeNumber, function(xml) {
+      parseString(xml, function(err, result) {
+         console.dir(result);
+         for (var i=0; i <= result.Stock.AvailabilityList.Availability[0].Basket.ItemList.length; i++) {
+            // var stockItem = result.Stock.AvailabilityList.Availability[0].Basket.ItemList[i];
+            // var partNumber = stockItem.getAttribute('id');
+            // var isAvailable = stockItem.status == 'available';
+            // avilabilityMap.push({partNumber: partNumber, isAvailable: isAvailable});
+         }
+         res.setHeader('Content-Type', 'application/json');
+         res.send(avilabilityMap);
+      })
+   });
+}
+
+function makeXMLRequestBody(partNumbers, storeNumber, callback) {
+
+   //Start of XML request
+   var xmlRequest = '<?xml version="1.0" encoding="UTF-8"?><stk:Stock brand="argos" version="1"\
+   xsi:schemaLocation="http://schemas.homeretailgroup.com/stock stock-v1.xsd"\
+   xmlns:bsk="http://schemas.homeretailgroup.com/basket"\
+   xmlns:cmn="http://schemas.homeretailgroup.com/common"\
+   xmlns:loc="http://schemas.homeretailgroup.com/location"\
+   xmlns:stk="http://schemas.homeretailgroup.com/stock"\
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\
+   <stk:LocationList>';
+
+   // Store to search
+   xmlRequest += '<loc:Location uri="http://api.homeretailgroup.com/location/argos/store/'+storeNumber+'"/></stk:LocationList><bsk:Basket version="1"><bsk:ItemList>';
+
+   // Loop and add items to request stock info for
+   for(var i = 0; i < partNumbers.length; ++i) {
+      xmlRequest += '<cmn:Item type="product" uri="http://api.homeretailgroup.com/product/argos/' + partNumbers[i] + '" id="' + partNumbers[i] + '"><cmn:Quantity type="requested">1</cmn:Quantity></cmn:Item>';
+   }
+   // End of XML request
+   xmlRequest += '</bsk:ItemList></bsk:Basket></stk:Stock>';
+
+   request({
+      url: 'http://api.homeretailgroup.com/stock/argos?apiKey=uk4tbngzceyxpwwvfcbtkvkj',
+      method: 'POST',
+      body: xmlRequest
+   }, function(error, response) {
+      callback(response.body);
    });
 }

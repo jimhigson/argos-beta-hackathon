@@ -62,13 +62,13 @@ function scrapeProductPage(productId, $) {
        category = metaData && metaData.split(',')[0].trim();
    
    return {
-      productId: productId,
-      productTitle: $('#pdpProduct h1.fn').text().trim(),
-      price: scrapeProductPrice($),
-      summary: $('.fullDetails').html(),
-      summaryText: $('.fullDetails').text(),
-      imgUrl: $('#mainimage').attr('src'),
-      category:    category
+      productId:     productId,
+      productTitle:  $('#pdpProduct h1.fn').text().trim(),
+      price:         scrapeProductPrice($),
+      summary:       $('.fullDetails').html(),
+      summaryText:   $('.fullDetails').text(),
+      imgUrl:        $('#mainimage').attr('src'),
+      category:      category
    };
 }
 

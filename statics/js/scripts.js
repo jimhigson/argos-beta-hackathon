@@ -1,6 +1,8 @@
 
 $(document).ready(function ($) {
 
+   var currentStore;
+   
    var searchBox = $('input.mainSearch');
    var storeSearch = $('.storeSearch');
    var results = $('#results');
@@ -48,8 +50,16 @@ $(document).ready(function ($) {
    
    function handleStoreRequest(data) {
       storesAutocomplete.html('');   
-      data.hits.hits.forEach( function (hit) {   
-         var html =  '<div class="storeResult">' + hit._source.name + '</div>';   
+      data.hits.hits.forEach( function (hit) {
+         var store = hit._source;
+         
+         
+         var html =     '<div class="storeResult" ' +
+            '                  data-storeId="' + store.id + '"' + 
+            '                  data-name="' + store.name + '"' +
+                         '">' + 
+                           store.name + 
+                        '</div>';   
          storesAutocomplete.append(html);   
       });   
    }   
@@ -83,7 +93,7 @@ $(document).ready(function ($) {
    }
    
    
-   function updateStoreAutoComplete() {
+   function updateStoreKeyUp() {
       var queryTerm = sanitiseQueryTerm(storeSearch.val());
 
       if (queryTerm) {
@@ -103,9 +113,17 @@ $(document).ready(function ($) {
    }
 
    searchBox.keyup(updateAutoComplete);
-   storeSearch.keyup(updateStoreAutoComplete);
+   storeSearch.keyup(updateStoreKeyUp);
    
    updateAutoComplete();
    
    $('#search').sticky();
+   
+   $('#storesAutocomplete').on('click', '.storeResult', function( evt ) {
+      currentStore = $(event.target).data('storeid');
+
+      storeSearch.val( $(event.target).data('name') );
+      
+      console.log('the store is now', currentStore);
+   });
 });

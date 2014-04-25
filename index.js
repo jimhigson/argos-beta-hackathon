@@ -206,24 +206,52 @@ function getStockInfo(req, res) {
 
    var partNumbers = req.params.partNumbers.split(',');
    var storeNumber = req.params.storeNumber;
-   var avilabilityMap = [];
+   var numOfLoops = Math.ceil(partNumbers.length / 10);
 
-   var reponseXML = makeXMLRequestBody(partNumbers, storeNumber, function(xml) {
-      parseString(xml, function(err, result) {
-         for(var i=0; i <= result['stk:Stock']['stk:AvailabilityList'][0]['stk:Availability'][0]['bsk:Basket'][0]['bsk:ItemList'].length; i++) {
-            var stockItem = result['stk:Stock']['stk:AvailabilityList'][0]['stk:Availability'][0]['bsk:Basket'][0]['bsk:ItemList'];
-            console.dir(stockItem[i]);
-            // var partNumber = stockItem.getAttribute('id');
-            // var isAvailable = stockItem.status == 'available';
-            // avilabilityMap.push({partNumber: partNumber, isAvailable: isAvailable});
-         }
-         res.setHeader('Content-Type', 'application/json');
-         res.send(avilabilityMap);
-      })
-   });
+   for(var i = 0; i < numOfLoops; ++i) { 
+      var startIndex = i * 10;
+      var endIndex = i * 10 + 10;
+
+
+      if(i==numOfLoops-1) {
+         endIndex = i * 10 + partNumbers.length % 10;
+         makeXMLRequestBody(partNumbers.slice(startIndex, endIndex), storeNumber, true, res);
+      } else {
+         makeXMLRequestBody(partNumbers.slice(startIndex, endIndex), storeNumber, false, res);
+      }
+   }
 }
 
-function makeXMLRequestBody(partNumbers, storeNumber, callback) {
+function serveJSONresponse(xml, finalLoop, res) {
+   parseString(xml, function(err, result) {
+
+      var availabilityMap = [];
+      console.log(result);
+
+         try {
+            for (var i = 0; i < result['stk:Stock']['stk:AvailabilityList'][0]['stk:Availability'][0]['bsk:Basket'][0]['bsk:ItemList'][0]['cmn:Item'].length; i++) {
+               var stockItem = result['stk:Stock']['stk:AvailabilityList'][0]['stk:Availability'][0]['bsk:Basket'][0]['bsk:ItemList'][0]['cmn:Item'][i];
+               var partNumber = stockItem.$.id;
+               var availability = stockItem['cmn:Status'][0]._;
+
+               availabilityMap.push({partNumber: partNumber, availability: availability});
+            }
+            if(finalLoop) {
+               res.setHeader('Content-Type', 'application/json');
+               res.send(availabilityMap);
+            }
+         } catch(e) {
+            // Make this never happen, Steven!
+            console.log('something went wrong handling a response');
+            console.log(e);
+            res.setHeader('Content-Type', 'application/json');
+            res.send([]);
+         }
+
+      });
+}
+
+function makeXMLRequestBody(partNumbers, storeNumber, finalLoop, res) {
 
    //Start of XML request
    var xmlRequest = '<?xml version="1.0" encoding="UTF-8"?><stk:Stock brand="argos" version="1"\
@@ -245,11 +273,15 @@ function makeXMLRequestBody(partNumbers, storeNumber, callback) {
    // End of XML request
    xmlRequest += '</bsk:ItemList></bsk:Basket></stk:Stock>';
 
+   console.log(xmlRequest);
+   console.log('---------');
+
    request({
       url: 'http://api.homeretailgroup.com/stock/argos?apiKey=uk4tbngzceyxpwwvfcbtkvkj',
       method: 'POST',
       body: xmlRequest
    }, function(error, response) {
-      callback(response.body);
+      serveJSONresponse(response.body, finalLoop, res);
    });
+
 }

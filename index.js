@@ -60,10 +60,33 @@ app
    })   
    .get('/search/:term',            servePageOrJson )
    .get('/search/:category/:term',  servePageOrJson )
+   .get('/stores/:term', serveStoreJson)
    .use(express.static('statics'));
 
 app.listen(PORT);
 console.log('server started'.green);
+
+function serveStoreJson(req, res) {
+   
+   var term = req.params.term;
+
+   request({
+
+      url: ELASTIC_SEARCH_HOST + '/stores/_search?q=' + term + '*',
+
+   }, function (error, _, responseBodyJson) {
+
+      var responseObj = JSON.parse(responseBodyJson);
+
+      res.setHeader('Content-Type', 'application/json');
+
+      if( !responseObj.error ) {
+         res.send(responseObj);
+      } else {
+         res.send(responseObj.status, responseObj);
+      }
+   });   
+}
 
 function servePageOrJson(req, res) {
 

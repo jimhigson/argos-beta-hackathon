@@ -80,7 +80,13 @@ input.storeSearch {
   max-width: 940px;
   position: relative;
   color: #111111;
+  transition:opacity;
 }
+
+.outOfStock {
+ opacity:0.5;
+}
+
 .searchResultBox img {
   margin: 5px 5px 5px 20px;
   width: 60px;
@@ -126,4 +132,5 @@ input.storeSearch {
     width:40%;
     background-color:white;
 }
+
 

@@ -6,26 +6,54 @@ var ELASTIC_SEARCH_URL = 'http://localhost:9200';
 
 var request = require('request');
 var cheerio = require('cheerio');
+var fs = require('fs');
 require('http').globalAgent.maxSockets = MAX_SIMULTANEOUS_PAGE_REQUESTS;
 require('colors');
 
 var argv = require('minimist')(process.argv.slice(2));
 
 var gaveRange = (argv.startIndex !== undefined && argv.endIndex !== undefined);
-if(!argv.all && !argv.setup && !gaveRange) {
+
+if(!argv.all && !argv.setup && !gaveRange && !argv.indexStores) {
    console.log('not enough parameters. Call like:\n' +
-      '\tseedSearch.js --setup \n' +      
+      '\tseedSearch.js --indexStores \n' +
+      '\tseedSearch.js --setup \n' +
       '\tseedSearch.js --startIndex 0 --endIndex 50 \n' +
       '\tseedSearch.js --all \n ');
    process.exit(1);
 }
 
+if( argv.indexStores ) {
+
+   var stores = JSON.parse(fs.readFileSync('stores.json'));
+   
+   stores.forEach(function(store) {
+
+      var url = ELASTIC_SEARCH_URL + '/argos/stores/' + store.id;
+      
+      request({
+         url: url,
+         method: 'PUT',
+         body: JSON.stringify(store)
+      }, function(err, responseJson) {
+         if( err ) {
+            console.log(String(err).red);
+         } else {
+            console.log('put store', store.name.blue);
+         }
+      });
+   });
+   
+   return;
+}
+
 if( argv.setup ) {
    console.log('setting up mappings etc');
+
    request({
       url:     ELASTIC_SEARCH_URL + '/argos/',
       method:  'PUT',
-      body:    require('fs').readFileSync('settings.json')
+      body:    fs.readFileSync('settings.json')
    }, function(err, responseJson) {
       if( err ) {
          console.log(String(err).red);

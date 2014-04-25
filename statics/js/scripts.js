@@ -12,7 +12,8 @@ $(document).ready(function ($) {
 
    function handleProductAjaxResult(data) {
       results.html('');
-      data.hits.hits.forEach( function (hit) {
+      var hits = data.hits.hits;
+      hits.forEach( function (hit) {
 
          var product = hit._source,
              productTitleHtml = (hit.highlight && hit.highlight.productTitle) || product.productTitle,
@@ -32,6 +33,7 @@ $(document).ready(function ($) {
       });
       results.find('img').unveil();
 
+      showAvailability();
       /*
        if( data.categories.length > 1 ) {
        data.categories.forEach(function (cat) {
@@ -47,6 +49,22 @@ $(document).ready(function ($) {
        }
 
       categories.html('');*/
+   }
+   
+   function showAvailability() {
+      // request availability of stock items if we have a store:
+      if( currentStore ) {
+         var productList = $('.searchResultBox').toArray().map(function(ele) {
+            return $(ele).data('productid');
+         });
+         
+         var availabilityUrl = '/stockInfo/' + currentStore + '/' + productList.join(',');
+         
+         console.log('I need to hit', availabilityUrl);
+         /*$.ajax( availabilityUrl, function() {
+
+          });*/
+      }
    }
    
    function handleStoreRequest(data) {

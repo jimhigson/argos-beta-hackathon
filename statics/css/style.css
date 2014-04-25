@@ -40,13 +40,22 @@ body {
   position: absolute;
   top: 24px;
 }
-input.main-search {
-  padding: 11px 0 11px 45px;
-  border: 0;
-  display: block;
-  width: 100%;
+input {
+  padding: 11px 0 11px 0px;
   font-size: 30px;
   letter-spacing: 0.6px;
+  border: 0;
+}
+
+input.main-search {
+  padding-left: 45px;
+  width: 70%;
+}
+
+input.store-search {
+  position: absolute;
+  right: 0;
+  width: 20%;
 }
 
 #auto-complete {
@@ -55,13 +64,13 @@ input.main-search {
 .searchResultBox {
   background: #fff;
   margin: 5px auto 0 auto;
-  width: 940px;
+  width:100%;
+  max-width: 940px;
   position: relative;
-  padding:5px 20px;
   color: #111111;
 }
 .searchResultBox img {
-  margin: 5px;
+  margin: 5px 5px 5px 20px;
   width: 60px;
   height:72px;
 }

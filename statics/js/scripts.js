@@ -140,6 +140,9 @@ $(document).ready(function ($) {
 
    searchBox.keyup(updateAutoComplete);
    storeSearch.keyup(updateStoreKeyUp);
+   storeSearch.focus(function() {
+      storeSearch.val('');
+   });
    
    updateAutoComplete();
    $('#search').sticky();

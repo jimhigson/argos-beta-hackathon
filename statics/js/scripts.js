@@ -147,10 +147,11 @@ $(document).ready(function ($) {
    $('#storesAutocomplete').on('click', '.storeResult', function( evt ) {
       currentStore = $(event.target).data('storeid');
 
+      console.log('your store is now', currentStore);
+      
       storeSearch.val( $(event.target).data('name') );
 
+      showAvailability();
       hideStoreAutocomplete();
-      
-      console.log('your store is now', currentStore);
    });
 });

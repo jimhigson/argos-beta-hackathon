@@ -1,9 +1,10 @@
 
 $(document).ready(function ($) {
 
-   var searchBox = $('input.main-search');
-   var storeSearch = $('store-search');
+   var searchBox = $('input.mainSearch');
+   var storeSearch = $('.storeSearch');
    var results = $('#results');
+   var storeResults = $('#stores');
    var categories = $('#categories');
    var currentAjax = null;
 
@@ -73,8 +74,31 @@ $(document).ready(function ($) {
       }
    }
    
+   function handleStoreRequest(data) {
+      storeResults.html('');
+      data.hits.hits.forEach( function (hit) {
+         var html =  '<div class="storeResult">' + hit._source.name + '</div>';
+         storeResults.append(html);
+      });
+   }
+   
    function updateStoreAutoComplete() {
-      console.log(this);
+      var queryTerm = sanitiseQueryTerm(storeSearch.val());
+
+      if (queryTerm) {
+
+         var storesURL = '/stores/' + queryTerm;
+
+         if( currentAjax ) {
+            currentAjax.abort();
+         }
+
+         currentAjax = $.ajax({
+            url: storesURL
+         }).done(handleStoreRequest);
+      } else {
+         storeResults.html('');
+      }
    }
 
    searchBox.keyup(updateAutoComplete);

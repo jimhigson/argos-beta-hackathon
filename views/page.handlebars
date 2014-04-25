@@ -30,14 +30,15 @@
 
             <img class="searchIcon" width="32" height="32" src="/img/icon-search.png" alt="Search">
             
-            <input type="text" class="main-search" placeholder="What are you looking for today?" value="{{startTerm}}">
-            <input type="text" class="store-search" placeholder="Any store" value="">
-            
+            <input type="text" class="mainSearch" placeholder="What are you looking for today?" value="{{startTerm}}">
+            <input type="text" class="storeSearch" placeholder="Any store" value="">
+            <div id="stores"> </div>
         </div>
     </section>
 
     <div id="categories"></div>   
     <div id="results"></div>   
+  
 
 <script src="/bower_components/jquery/dist/jquery.js"></script>
 <script src="/bower_components/unveil/jquery.unveil.min.js"></script>

@@ -47,12 +47,12 @@ input {
   border: 0;
 }
 
-input.main-search {
+input.mainSearch {
   padding-left: 45px;
   width: 70%;
 }
 
-input.store-search {
+input.storeSearch {
   position: absolute;
   right: 0;
   width: 20%;
@@ -91,6 +91,12 @@ input.store-search {
   font-size: 18px;
   font-weight: bold;
 }
+
+.storeResult {
+    
+}
+
+
 
 #logo img {
     max-width: 100%;

@@ -209,16 +209,28 @@ function getStockInfo(req, res) {
    var avilabilityMap = [];
 
    var reponseXML = makeXMLRequestBody(partNumbers, storeNumber, function(xml) {
+
       parseString(xml, function(err, result) {
-         console.dir(result);
-         for (var i=0; i <= result.Stock.AvailabilityList.Availability[0].Basket.ItemList.length; i++) {
-            // var stockItem = result.Stock.AvailabilityList.Availability[0].Basket.ItemList[i];
-            // var partNumber = stockItem.getAttribute('id');
-            // var isAvailable = stockItem.status == 'available';
-            // avilabilityMap.push({partNumber: partNumber, isAvailable: isAvailable});
+         
+         try {
+
+            for (var i = 0; i < result['stk:Stock']['stk:AvailabilityList'][0]['stk:Availability'][0]['bsk:Basket'][0]['bsk:ItemList'][0]['cmn:Item'].length; i++) {
+               var stockItem = result['stk:Stock']['stk:AvailabilityList'][0]['stk:Availability'][0]['bsk:Basket'][0]['bsk:ItemList'][0]['cmn:Item'][i];
+
+               var partNumber = stockItem.$.id;
+               var availability = stockItem['cmn:Status'][0]._;
+
+               avilabilityMap.push({partNumber: partNumber, availability: availability});
+            }
+
+            res.setHeader('Content-Type', 'application/json');
+            res.send(avilabilityMap);
+         } catch(e) {
+            // Make this never happen, Steven!
+            console.log('something went wrong handling a response');
+            res.setHeader('Content-Type', 'application/json');
+            res.send([]);
          }
-         res.setHeader('Content-Type', 'application/json');
-         res.send(avilabilityMap);
       })
    });
 }

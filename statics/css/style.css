@@ -81,6 +81,12 @@ input.storeSearch {
   padding: 10px;
   float: left;
   color: #00ffff;
+  transition:opacity;
+}
+
+
+.outOfStock {
+ opacity:0.5;
 }
 
 .searchResultBox img {
@@ -135,4 +141,5 @@ input.storeSearch {
     width:40%;
     background-color:white;
 }
+
 

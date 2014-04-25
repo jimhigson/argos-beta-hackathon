@@ -55,7 +55,7 @@ $(document).ready(function ($) {
    
    function showAvailability() {
       // request availability of stock items if we have a store:
-      if( currentStore ) {
+      if( currentStore && $('.searchResultBox').length > 0 ) {
          var productList = $('.searchResultBox').toArray().map(function(ele) {
             return $(ele).data('productid');
          });
@@ -63,9 +63,24 @@ $(document).ready(function ($) {
          var availabilityUrl = '/stockInfo/' + currentStore + '/' + productList.join(',');
          
          console.log('I need to hit', availabilityUrl);
-         /*$.ajax( availabilityUrl, function() {
+         $.ajax( availabilityUrl )
+         .done( function( result ) {
+               
+            console.log(result);               
+               
+            result.forEach(function( productAvailability ) {
 
-          });*/
+               if( productAvailability.availability == 'out-of-stock' ) {
+                  var productElement = $('[data-productId=' + productAvailability.partNumber + ']');
+                  
+                  productElement.addClass('outOfStock');
+                  
+                  console.log(productAvailability.partNumber + ' is out of stock');
+               }
+            });
+               
+            console.log('I got back', result);
+         });
       }
    }
    
@@ -142,6 +157,9 @@ $(document).ready(function ($) {
 
    searchBox.keyup(updateAutoComplete);
    storeSearch.keyup(updateStoreKeyUp);
+   storeSearch.focus(function() {
+      storeSearch.val('');
+   });
    
    updateAutoComplete();
    $('#search').sticky();

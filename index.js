@@ -210,9 +210,9 @@ function getStockInfo(req, res) {
 
    var reponseXML = makeXMLRequestBody(partNumbers, storeNumber, function(xml) {
       parseString(xml, function(err, result) {
-         console.dir(result);
-         for (var i=0; i <= result.Stock.AvailabilityList.Availability[0].Basket.ItemList.length; i++) {
-            // var stockItem = result.Stock.AvailabilityList.Availability[0].Basket.ItemList[i];
+         for(var i=0; i <= result['stk:Stock']['stk:AvailabilityList'][0]['stk:Availability'][0]['bsk:Basket'][0]['bsk:ItemList'].length; i++) {
+            var stockItem = result['stk:Stock']['stk:AvailabilityList'][0]['stk:Availability'][0]['bsk:Basket'][0]['bsk:ItemList'];
+            console.dir(stockItem[i]);
             // var partNumber = stockItem.getAttribute('id');
             // var isAvailable = stockItem.status == 'available';
             // avilabilityMap.push({partNumber: partNumber, isAvailable: isAvailable});

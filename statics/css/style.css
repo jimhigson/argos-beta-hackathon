@@ -110,7 +110,6 @@ input.storeSearch , #storesAutocomplete {
 .searchResultBox {
   background: #fff;
   width: 200px;
-  height: 240px;
   margin: 13px;
   padding: 10px;
   display:inline-block;
@@ -122,8 +121,8 @@ input.storeSearch , #storesAutocomplete {
 }
 
 .searchResultBox img {
-  width: 200px;
-  height: 200px;
+  width: 180px;
+  height: 180px;
 }
 .searchResultBox .description {
     display:inline-block;
@@ -139,11 +138,12 @@ input.storeSearch , #storesAutocomplete {
 
 .searchResultBox h3 {
     font-size: 11px;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 200px;
-    margin-bottom: 5px;
+    margin-bottom: 1px;
+    margin-top: 3px;
+    height:2.5em;
 }
 
 .searchResultBox span {

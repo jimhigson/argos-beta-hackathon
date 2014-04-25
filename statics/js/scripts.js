@@ -2,6 +2,7 @@
 $(document).ready(function ($) {
 
    var searchBox = $('input.main-search');
+   var storeSearch = $('store-search');
    var results = $('#results');
    var categories = $('#categories');
    var currentAjax = null;
@@ -27,21 +28,21 @@ $(document).ready(function ($) {
       });
       results.find('img').unveil();
 
-      categories.html('');
+      /*
+       if( data.categories.length > 1 ) {
+       data.categories.forEach(function (cat) {
+       var catNameInUrl = makeInputUrlFriendly(cat.name),
+       catLink = '/search/' + catNameInUrl + '/' + queryTerm,
+       catHtml = '<span class="category">' +
+       '<a href="' + catLink + '">' + cat.name + '</a>' +
+       //'<button class="close">' +
+       '</span>';
 
-      if( data.categories.length > 1 ) {
-         data.categories.forEach(function (cat) {
-            var catNameInUrl = makeInputUrlFriendly(cat.name),
-               catLink = '/search/' + catNameInUrl + '/' + queryTerm,
-               catHtml = '<span class="category">' +
-                  '<a href="' + catLink + '">' + cat.name + '</a>' +
-                  //'<button class="close">' +
-                  '</span>';
+       categories.append(catHtml);
+       });
+       }
 
-            categories.append(catHtml);
-         });
-      }
-
+      categories.html('');*/
    }   
    
    function sanitiseQueryTerm(term) {
@@ -71,8 +72,14 @@ $(document).ready(function ($) {
          results.html('');
       }
    }
+   
+   function updateStoreAutoComplete() {
+      console.log(this);
+   }
 
    searchBox.keyup(updateAutoComplete);
+   storeSearch.keyup(updateStoreAutoComplete);
+   
    updateAutoComplete();
    
    $('#search').sticky();

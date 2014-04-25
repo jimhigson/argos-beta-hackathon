@@ -4,7 +4,7 @@ googos
 A google-style search for Argos
 
 
-10 Step Quick Installation:
+12 Step Quick Installation:
 
 1. Pull repository
 2. Install Node
@@ -16,3 +16,7 @@ A google-style search for Argos
 8. Navigate to /seedSearch/ directory
 9. Run 'node seedSearch.js --setup'
 10. Run 'node seedSearch.js --all'
+11. Restart elasticsearch
+12. Start server ('node index.js')
+
+x

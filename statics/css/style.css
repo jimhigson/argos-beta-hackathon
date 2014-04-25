@@ -83,10 +83,24 @@ input.mainSearch {
 
 input.storeSearch {
   position: absolute;
-  right: 40px;
-  width: 40%;
+
 }
 
+input.storeSearch , #storesAutocomplete {
+    position:absolute;
+    right: 40px;
+    width: 39%;
+    background-color:white;
+}
+
+.storeResult {
+    padding:10px;
+    font-size: 18px;
+}
+
+#storesAutocomplete {
+    z-index: 1;
+}
 
 #auto-complete {
   padding: 20px;
@@ -148,17 +162,6 @@ input.storeSearch {
 }
 .category button {
     margin-left: 0.2em;
-}
-
-#storesAutocomplete {
-    position:absolute;
-    right:0;
-    z-index:1;
-}
-
-#storesAutocomplete {
-    width:40%;
-    background-color:white;
 }
 
 input:focus 

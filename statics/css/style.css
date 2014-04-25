@@ -107,6 +107,7 @@ input.storeSearch {
 #storesAutocomplete {
     position:absolute;
     right:0;
+    z-index:1;
 }
 
 #storesAutocomplete {

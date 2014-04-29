@@ -121,7 +121,11 @@ function fetchAndScrapeProduct( productId, callback ) {
          var $ = cheerio.load(body);
 
          try {
-            callback(undefined, scrapeProductPage(productId, $));
+            var productInfo = scrapeProductPage(productId, $);
+            
+            productInfo.legacyUrl = url;
+            
+            callback(undefined, productInfo);
          } catch(e) {
             callback(e);
          }

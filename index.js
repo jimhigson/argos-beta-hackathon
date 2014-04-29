@@ -162,15 +162,12 @@ function serveJson(req, res, query, category) {
                }
       },
 
-      "facets" : {
-         "category" : {
-            "terms" : {
-               "field" : "category",
-               "size" : 10
-            }
-         }
+      "aggregations" : {
+         "sigFromCat" : {"significant_terms"     : {"field" : "category", "size":4}},
+         "sigFromName" : {"significant_terms"    : {"field" : "productTitle", "size":4}},
+         "priceSpread" : {"percentiles" : {"field": "price", "percents" : [33, 50, 66] }}
       },
-
+      
       "filter": {
          and:[
             {  "range": {

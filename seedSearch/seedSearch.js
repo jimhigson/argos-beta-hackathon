@@ -84,11 +84,14 @@ function scrapeProductPrice($) {
    return priceMatch ? Number(priceMatch[0]) : 0; // the regex doesn't match on some pages
 }
 
+function stripTrailingDot(str){
+   return str.replace(/.$/, '');
+}
+
 function scrapeProductname($){
-   var text = $('#pdpProduct h1.fn').text().trim();
+   var productName = $('#pdpProduct h1.fn').text().trim();
    
-   // Products often end in a full stop. Remove this:
-   return text.replace(/.$/, '');
+   return stripTrailingDot(productName);
 }
 
 function scrapeProductPage(productId, $) {

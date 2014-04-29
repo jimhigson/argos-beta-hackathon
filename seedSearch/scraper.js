@@ -12,9 +12,38 @@ function stripTrailingDot(str){
 }
 
 function scrapeProductname($){
-   var productName = $('#pdpProduct h1.fn').text().trim();
+   try {
 
-   return stripTrailingDot(productName);
+      var productName = $('#pdpProduct h1.fn').text().trim();
+
+      return stripTrailingDot(productName);
+   }catch(e) {
+      throw new Error('could not get product name ' + e);
+   }
+}
+
+function scrapeSummary($) {
+   try {
+      return $('.fullDetails').html().trim();
+   }catch(e) {
+      throw new Error('could not get summary ' + e);
+   }
+}
+
+function scrapeSummaryText($) {
+   try {
+      return $('.fullDetails').text().trim();
+   }catch(e) {
+      throw new Error('could not get summary text ' + e);
+   }
+}
+
+function scrapeSummaryFirstParagraph($) {
+   try {
+      return $('.fullDetails p').text().trim();
+   }catch(e) {
+      throw new Error('could not get summary first paragraph text ' + e);
+   }
 }
 
 module.exports = function scrapeProductPage(productId, body) {
@@ -28,9 +57,9 @@ module.exports = function scrapeProductPage(productId, body) {
       productId:                 productId,
       productTitle:              scrapeProductname($),
       price:                     scrapeProductPrice($),
-      summary:                   $('.fullDetails').html().trim(),
-      summaryText:               $('.fullDetails').text().trim(),
-      summaryFirstParagraph:     $('.fullDetails p').text().trim(),
+      summary:                   scrapeSummary($),
+      summaryText:               scrapeSummaryText($),
+      summaryFirstParagraph:     scrapeSummaryFirstParagraph($),
       imgUrl:                    $('#mainimage').attr('src'),
       category:                  category
    };

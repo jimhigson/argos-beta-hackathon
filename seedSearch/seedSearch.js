@@ -111,6 +111,7 @@ function fetchAndScrapeProduct( productId, callback ) {
 var productsIdsToRequest = gaveRange? loadProductIdsInRange(argv.startIndex, argv.endIndex) : loadAllProductIds();
 var numberOfRequests = productsIdsToRequest.length; 
 var itemsSoFar = 0;
+var failedProducts = [];
 
 var pendingRequests = 0;
 
@@ -161,6 +162,9 @@ function handleElasticSearchPutResponse(error, res, body) {
 
    if( pendingRequests == 0 && productsIdsToRequest.length == 0 ) {
       console.log('All products PUT to ElasticSearch');
+      if( failedProducts.length ) {
+         console.log('there were some failures:'.red, failedProducts);
+      }
       process.exit(0);
    }
    
@@ -173,7 +177,8 @@ function spiderNextProduct() {
    fetchAndScrapeProduct(productId, function(err, productJson) {
 
       if( err ) {
-         console.log('ERROR'.red, 'could not fetch product', productId, err);
+         console.log('ERROR'.red, 'could not get data from product', productId, err);
+         failedProducts.push(productId);
          return;
       }
       

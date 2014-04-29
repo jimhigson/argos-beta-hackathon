@@ -162,6 +162,15 @@ function serveJson(req, res, query, category) {
                }
       },
 
+      "facets" : {
+         "category" : {
+            "terms" : {
+               "field" : "category",
+               "size" : 10
+            }
+         }
+      },
+
       "filter": {
          and:[
             {  "range": {

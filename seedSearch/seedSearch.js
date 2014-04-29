@@ -84,6 +84,13 @@ function scrapeProductPrice($) {
    return priceMatch ? Number(priceMatch[0]) : 0; // the regex doesn't match on some pages
 }
 
+function scrapeProductname($){
+   var text = $('#pdpProduct h1.fn').text().trim();
+   
+   // Products often end in a full stop. Remove this:
+   return text.replace(/.$/, '');
+}
+
 function scrapeProductPage(productId, $) {
 
    var metaData = $('meta[name=keywords]').attr('content'),
@@ -91,7 +98,7 @@ function scrapeProductPage(productId, $) {
    
    return {
       productId:                 productId,
-      productTitle:              $('#pdpProduct h1.fn').text().trim(),
+      productTitle:              scrapeProductname($),
       price:                     scrapeProductPrice($),
       summary:                   $('.fullDetails').html(),
       summaryText:               $('.fullDetails').text(),

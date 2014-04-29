@@ -2,14 +2,17 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <title>Argos beta</title>
 
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/reset.css">
+   {{#each stylesheets}}
+      <link rel="stylesheet" href="{{this}}">
+   {{/each}}
 
+   {{#each scripts}}
+      <script type="text/javascript" src="{{this}}"></script>
+   {{/each}}
 </head>
 
 <body>
@@ -42,12 +45,5 @@
     <div id="categories"></div>   
     <div id="results"></div>   
   
-
-<script src="/bower_components/jquery/dist/jquery.js"></script>
-<script src="/bower_components/unveil/jquery.unveil.min.js"></script>
-<script src="/bower_components/sticky/jquery.sticky.js"></script>
-<script src="/js/scripts.js"></script>
-
 </body>
-
 </html>

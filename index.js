@@ -7,6 +7,12 @@ var PORT = 6677,
     consolidate = require('consolidate'),
     parseString = require('xml2js').parseString;
 
+var cmdLineParams = require('minimist')(process.argv.slice(2)),
+    isProd = (cmdLineParams.env == 'prod'),
+
+    SCRIPTS = isProd? ['/js-concat/all.js'] : require('./jsSourcesList.js'),
+    STYLESHEETS = isProd? ["/css-min/all.css"] : ["/css/reset.css", "/css/style.css"];
+
 var app = express();
 
 require('colors');
@@ -36,7 +42,13 @@ function priceRange(query) {
 }
 
 function renderPage(res, term) {
-   res.render('page', {startTerm:(term || '')});
+
+   
+   res.render('page', {
+      startTerm:(term || ''),
+      scripts:SCRIPTS,
+      stylesheets:STYLESHEETS
+   });
 }
 
 function unencodeTerm(raw) {
@@ -66,7 +78,7 @@ app
    .use(express.static('statics'));
 
 app.listen(PORT);
-console.log('server started'.green);
+console.log('server started'.green, 'in', (isProd? 'production':'dev').green, 'mode');
 
 function serveStoreJson(req, res) {
    

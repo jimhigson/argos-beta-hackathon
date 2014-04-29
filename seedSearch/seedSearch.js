@@ -103,9 +103,9 @@ function scrapeProductPage(productId, $) {
       productId:                 productId,
       productTitle:              scrapeProductname($),
       price:                     scrapeProductPrice($),
-      summary:                   $('.fullDetails').html(),
-      summaryText:               $('.fullDetails').text(),
-      summaryFirstParagraph:     $('.fullDetails p').text(),
+      summary:                   $('.fullDetails').html().trim(),
+      summaryText:               $('.fullDetails').text().trim(),
+      summaryFirstParagraph:     $('.fullDetails p').text().trim(),
       imgUrl:                    $('#mainimage').attr('src'),
       category:                  category
    };

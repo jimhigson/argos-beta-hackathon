@@ -4,6 +4,7 @@ var PORT = 6677,
 
     express = require('express'),
     request = require('request'),
+    oboe = require('oboe'),
     consolidate = require('consolidate'),
     parseString = require('xml2js').parseString,
     elasticSearchRequestBody = require('./elasticSearchRequestBody.js');
@@ -145,41 +146,44 @@ function analyseCategories( response ) {
 function serveJson(req, res, query, category) {
 
    var queryTerms = priceRange(query),
-       requestBodyJson = elasticSearchRequestBody(
-                              queryTerms.term,
-                              queryTerms.minPrice,
-                              queryTerms.maxPrice,
-                              category );
+       requestBody = elasticSearchRequestBody(
+                         queryTerms.term,
+                         queryTerms.minPrice,
+                         queryTerms.maxPrice,
+                         category );
+   
+   res.setHeader('Content-Type', 'application/json');
 
-   request({
+   var responseObj = {
+      results: [],
+      request: requestBody
+   };
 
+   oboe({
       url: ELASTIC_SEARCH_HOST + '/products/_search',
-      method: 'GET',
-      body: JSON.stringify(requestBodyJson)
+      body: requestBody
 
-   }, function (error, _, responseBodyJson) {
-            
-      var responseObj = JSON.parse(responseBodyJson);
-      responseObj.request = requestBodyJson;
-
-      res.setHeader('Content-Type', 'application/json');
+   }).on('node:!.error', function(error) {
+      res.send('400', error);
       
-      if( !responseObj.error ) {
-         // Analyse categories
-         responseObj.categories = analyseCategories(responseObj);
+   }).on('node:!.hits.hits[*]._source', function( result ) {
 
-         // Clean up JSON
-         for(var i = 0; i < responseObj.hits.hits.length; ++i) {
-            delete responseObj.hits.hits[i]._source.summary;
-            delete responseObj.hits.hits[i]._source.summaryText;
-            //delete responseObj.hits.hits[i].highlight.summaryText;
-         }
-
-         res.send(responseObj);
-      } else {
-         res.send(responseObj.status, responseObj);
-      }
+      responseObj.results.push( prepareSearchResultForFrontEnd( result ) );
+      
+   }).on('done', function() {
+      
+      res.send(200, responseObj);
    });
+}
+
+function prepareSearchResultForFrontEnd( elasticSearchHit ) {
+
+   var highlightedProductTitle = (elasticSearchHit.highlight && elasticSearchHit.highlight.productTitle) || elasticSearchHit.productTitle;
+
+   elasticSearchHit.highlightedProductTitle = highlightedProductTitle;
+   elasticSearchHit.formattedPrice = '£' + Number(elasticSearchHit.price).toFixed(2);
+   
+   return elasticSearchHit;
 }
 
 function getStockInfo(req, res) {

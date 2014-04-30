@@ -43,12 +43,12 @@
     <div id="categories"></div>   
     <div id="results"></div>
 
-   <template>
+   <template id="resultTemplate">
        <div class="searchResultBox" data-productId="\{{productId}}">
            <img data-src="\{{imgUrl}}">
            <span class="description">
-              <h3>\{{productTitleHtml}}</h3>
-              <span>\{{price}}</span>
+              <h3>\{{{highlightedProductTitle}}}</h3>
+              <span>\{{formattedPrice}}</span>
            </span>
        </div>
    </template>

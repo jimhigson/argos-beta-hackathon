@@ -19,14 +19,15 @@
     "grunt-develop": "^0.3.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-contrib-compress": "^0.8.0",
-    "grunt-sass": "^0.12.1"
+    "grunt-sass": "^0.12.1",
+    "oboe": "^1.14.3"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "predeploy": "grunt build",
     "start": "node index.js --env=prod"
-  },   
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/jimhigson/googos.git"

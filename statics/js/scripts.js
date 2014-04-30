@@ -1,6 +1,8 @@
 
 $(document).ready(function ($) {
 
+   var resultTemplate = Handlebars.compile( $('template#resultTemplate').html() );
+      
    var currentStore;
    
    var searchBox = $('input.mainSearch');
@@ -12,24 +14,10 @@ $(document).ready(function ($) {
 
    function handleProductAjaxResult(data) {
       results.html('');
-      var hits = data.hits.hits;
-      hits.forEach( function (hit) {
 
-         var product = hit._source,
-             productTitleHtml = (hit.highlight && hit.highlight.productTitle) || product.productTitle,
-             productUrl = 'http://www.argos.co.uk/static/Product/partNumber/' + product.productId + '.htm';
+      data.results.forEach( function (result) {
 
-         var hitHtml =     '<div class="searchResultBox" data-productId="' + product.productId + '">'
-                           + '<a href="'+ productUrl +'">'
-                           + '<img data-src="http://www.argos.co.uk/' + product['imgUrl'] + '">'
-                           + '<div class="description">'
-                           + '<h3>' + productTitleHtml + '</h3>'
-                           + '<span>£' + Number(product['price']).toFixed(2) + '</span>'
-                           + '</div>'
-                           + '</a>'
-                           + '</div>';
-
-         results.append(hitHtml);
+         results.append(resultTemplate(result));
 
          currentAjax = null;
       });

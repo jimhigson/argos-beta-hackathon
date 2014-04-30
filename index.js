@@ -148,7 +148,8 @@ function serveJson(req, res, query, category) {
        requestBodyJson = elasticSearchRequestBody(
                               queryTerms.term,
                               queryTerms.minPrice,
-                              queryTerms.maxPrice );
+                              queryTerms.maxPrice,
+                              category );
 
    request({
 

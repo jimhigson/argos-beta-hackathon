@@ -60,7 +60,7 @@ module.exports = function scrapeProductPage(productId, body) {
       summary:                   scrapeSummary($),
       summaryText:               scrapeSummaryText($),
       summaryFirstParagraph:     scrapeSummaryFirstParagraph($),
-      imgUrl:                    $('#mainimage').attr('src'),
+      imgUrl:                    'http://www.argos.co.uk/' + $('#mainimage').attr('src'),
       category:                  category
    };
 };

@@ -40,10 +40,18 @@
 
     </header>
 
-
-
     <div id="categories"></div>   
-    <div id="results"></div>   
+    <div id="results"></div>
+
+   <template>
+       <div class="searchResultBox" data-productId="\{{productId}}">
+           <img data-src="\{{imgUrl}}">
+           <span class="description">
+              <h3>\{{productTitleHtml}}</h3>
+              <span>\{{price}}</span>
+           </span>
+       </div>
+   </template>
   
 </body>
 </html>

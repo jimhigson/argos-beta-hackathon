@@ -5,7 +5,8 @@ var PORT = 6677,
     express = require('express'),
     request = require('request'),
     consolidate = require('consolidate'),
-    parseString = require('xml2js').parseString;
+    parseString = require('xml2js').parseString,
+    elasticSearchRequestBody = require('./elasticSearchRequestBody.js');
 
 var cmdLineParams = require('minimist')(process.argv.slice(2)),
     isProd = (cmdLineParams.env == 'prod'),
@@ -143,52 +144,12 @@ function analyseCategories( response ) {
 
 function serveJson(req, res, query, category) {
 
-   var queryTerms = priceRange(query);
-   
-   var requestBodyJson = {
-      min_score: 0.4,
-      size: 100, // how many results?
-      
-      "highlight": {
-         "fields": {
-            "productTitle": {},
-            "summaryText": {}
-         }
-      },
-      query: {
-            "query_string": {
-                  "fields": ["productId^4", "productTitle^5", "category^3", "summaryText"],
-                  "query": queryTerms.term + '*'
-               }
-      },
+   var queryTerms = priceRange(query),
+       requestBodyJson = elasticSearchRequestBody(
+                              queryTerms.term,
+                              queryTerms.minPrice,
+                              queryTerms.maxPrice );
 
-      "aggregations" : {
-         "sigFromCat" : {"significant_terms"     : {"field" : "category", "size":4}},
-         "sigFromName" : {"significant_terms"    : {"field" : "productTitle", "size":4}},
-         "priceSpread" : {"percentiles" : {"field": "price", "percents" : [33, 50, 66] }}
-      },
-      
-      "filter": {
-         and:[
-            {  "range": {
-                  "price": {
-                     "from": queryTerms.minPrice,
-                     "to": queryTerms.maxPrice
-                  }
-               }
-            }
-         ]
-      }
-   };
-   
-   if( category ) {
-      requestBodyJson.filter.and.push({
-         term: {
-            category: category.toLowerCase()
-         }
-      });
-   }
-   
    request({
 
       url: ELASTIC_SEARCH_HOST + '/products/_search',

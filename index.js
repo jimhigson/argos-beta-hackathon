@@ -14,9 +14,9 @@ var PORT = 6677,
     isProd = (cmdLineParams.env == 'prod'),
 
     SCRIPTS = isProd? ['/js-concat/all.js'] : require('./jsSourcesList.js'),
-    STYLESHEETS = isProd? ["/css-min/all.css"] : ["/css/reset.css", "/css/style.css"];
+    STYLESHEETS = isProd? ["/css-min/all.css"] : ["/css/reset.css", "/css/style.css"],
 
-var app = express();
+    app = express();
 
 require('colors');
 

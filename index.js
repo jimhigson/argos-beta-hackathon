@@ -144,7 +144,7 @@ function sendResultsJsonToClient(req, res, query, category) {
    }).on('node:!.error', function(error) {
       res.send('400', error);
       
-   }).on('node:!.hits.hits[*]._source', function( result ) {
+   }).on('node:!.hits..{price productTitle}', function( result ) {
 
       responseObj.results.push( prepareSearchResultForFrontEnd( result ) );
 

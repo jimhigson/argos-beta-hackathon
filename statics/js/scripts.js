@@ -86,7 +86,7 @@ $(document).ready(function ($) {
       return input.replace(/\s/g, '_');
    }
    
-   function updateAutoComplete() {
+   function loadSearchResults() {
 
       var queryTerm = sanitiseQueryTerm(searchBox.val());
       
@@ -133,13 +133,13 @@ $(document).ready(function ($) {
       storesAutocomplete.hide();
    }
 
-   searchBox.keyup(updateAutoComplete);
+   searchBox.keyup(loadSearchResults);
    storeSearch.keyup(updateStoreKeyUp);
    storeSearch.focus(function() {
       storeSearch.val('');
    });
    
-   updateAutoComplete();
+   loadSearchResults();
    $('#search').sticky();
    
    $('#storesAutocomplete').on('click', '.storeResult', function( evt ) {

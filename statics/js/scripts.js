@@ -10,21 +10,7 @@ $(document).ready(function ($) {
    var results = $('#results');
    var storesAutocomplete = $('#storesAutocomplete');
    var categories = $('#categories');
-   var currentAjax = null;
-
-   function handleProductAjaxResult(data) {
-      results.html('');
-
-      data.results.forEach( function (result) {
-
-         results.append(resultTemplate(result));
-
-         currentAjax = null;
-      });
-      results.find('img').unveil();
-
-      showAvailability();
-   }
+   var currentRestTransport = null;
    
    function showAvailability() {
       // request availability of stock items if we have a store:
@@ -85,6 +71,30 @@ $(document).ready(function ($) {
    function makeInputUrlFriendly(input) {
       return input.replace(/\s/g, '_');
    }
+
+   function clearResultsHtml() {
+      results.html('');
+   }
+   
+   function showProductAjaxResult(result) {
+
+      var resultEle = $(resultTemplate(result));
+      resultEle.find('img').unveil();
+      results.append(resultEle);
+   }   
+   
+   function handleResultsFromProductRest(transport) {
+      
+      transport
+         .start( function(){
+            clearResultsHtml();
+         })
+         .node('!results.*', showProductAjaxResult)
+         .done(function(){
+            currentRestTransport = null;
+            showAvailability();
+         });
+   }
    
    function loadSearchResults() {
 
@@ -94,13 +104,16 @@ $(document).ready(function ($) {
          
          var searchURL = '/search/' + queryTerm + '?json=true';
 
-         if( currentAjax ) {
-            currentAjax.abort();
+         if( currentRestTransport ) {
+            currentRestTransport.abort();
          }
 
-         currentAjax = $.ajax({
+         currentRestTransport = oboe({
             url: searchURL
-         }).done(handleProductAjaxResult);
+         });
+         
+         handleResultsFromProductRest(currentRestTransport);
+
       } else {
          results.html('');
       }
@@ -117,11 +130,11 @@ $(document).ready(function ($) {
 
          var storesURL = '/stores/' + queryTerm;
 
-         if( currentAjax ) {
-            currentAjax.abort();
+         if( currentRestTransport ) {
+            currentRestTransport.abort();
          }
 
-         currentAjax = $.ajax({
+         currentRestTransport = $.ajax({
             url: storesURL
          }).done(handleStoreRequest);
       } else {

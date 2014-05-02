@@ -17,6 +17,7 @@
   "dependencies": {
     "jquery": "~2.1.0",
     "sticky": "*",
-    "unveil": "~1.3.0"
+    "unveil": "~1.3.0",
+    "oboe": "~1.14.3"
   }
 }

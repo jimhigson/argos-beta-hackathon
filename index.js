@@ -8,9 +8,9 @@ var PORT = 6677,
     consolidate = require('consolidate'),
     parseString = require('xml2js').parseString,
     parsePriceRange = require('./parsePriceRange.js'),
-    elasticSearchRequestBody = require('./elasticSearchRequestBody.js');
-
-var cmdLineParams = require('minimist')(process.argv.slice(2)),
+    elasticSearchRequestBody = require('./elasticSearchRequestBody.js'),
+   
+    cmdLineParams = require('minimist')(process.argv.slice(2)),
     isProd = (cmdLineParams.env == 'prod'),
 
     SCRIPTS = isProd? ['/js-concat/all.js'] : require('./jsSourcesList.js'),

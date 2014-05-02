@@ -115,7 +115,7 @@ $(document).ready(function ($) {
          handleResultsFromProductRest(currentRestTransport);
 
       } else {
-         results.html('');
+         clearResultsHtml();
       }
    }
    

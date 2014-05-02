@@ -7,8 +7,10 @@ var PORT = 6677,
     oboe = require('oboe'),
     consolidate = require('consolidate'),
     parseString = require('xml2js').parseString,
+   
     parsePriceRange = require('./parsePriceRange.js'),
     elasticSearchRequestBody = require('./elasticSearchRequestBody.js'),
+    likelySameNoun = require('./likelySameNoun.js'),
    
     cmdLineParams = require('minimist')(process.argv.slice(2)),
     isProd = (cmdLineParams.env == 'prod'),
@@ -158,13 +160,40 @@ function sendResultsJsonToClient(req, res, query, category) {
       
       var responseObject = {
          results : searchResults,
-         relatedTerms: relatedTerms.sort(function(a,b){return b.score - a.score})
+         relatedTerms: postProcessRelatedTerms(queryTerms.term, relatedTerms)
       };
       
       res.send(200, responseObject);
-   }).fail(function() {
+   }).fail(function(e) {
+      res.send(400, 'there was a failure');
       console.log('there was a failure'.red);
    });
+}
+
+function postProcessRelatedTerms( query, terms ) {
+   
+   var differentFromQuery = terms.filter(function(term) {
+      return !likelySameNoun(query, term.key);
+   });
+   
+   var unduplicated = [];
+
+   differentFromQuery.forEach(function(term) {
+      var isDuplicate = unduplicated
+                           .some(   function( existingTerm ){
+                                       return likelySameNoun(existingTerm.key, term.key);
+                                    });
+      
+      if(!isDuplicate) {
+         unduplicated.push(term);
+      }
+   });
+   
+   var sorted = unduplicated.sort(function(a,b){
+      return b.score - a.score;
+   }); 
+   
+   return sorted;
 }
 
 function highlightedProductTitle(elasticSearchHit) {

@@ -8,7 +8,7 @@ module.exports = function (grunt) {
       ,
       watch:{
          sources:{
-            files:['*.js', 'sass/*.scss'],
+            files:['*.js'],
             tasks:['develop:server'],
             options: { nospawn: true }
          }
@@ -63,6 +63,23 @@ module.exports = function (grunt) {
 
    });
 
+   grunt.registerTask("serversideJasmine", "Runs jasmine tests in node", function() {
+
+      require('jasmine-node').executeSpecsInFolder({
+
+         "specFolders":[process.cwd() + '/test/specs/unit'],
+         "isVerbose":true,
+         "showColors":true,
+         "teamcity":false,
+         "useRequireJs":false,
+         "regExpSpec":/\.spec\.(js)$/,
+         "junitreport":{"report":false, "savePath":"./reports/", "useDotNotation":true, "consolidate":true},
+         "includeStackTrace":true,
+         "growl":false,
+         onComplete: this.async()
+      });
+   });   
+   
 
    // load all grunt tasks
    grunt.loadNpmTasks('grunt-contrib-watch');

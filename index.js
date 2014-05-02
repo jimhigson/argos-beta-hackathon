@@ -131,10 +131,8 @@ function sendResultsJsonToClient(req, res, query, category) {
    
    res.setHeader('Content-Type', 'application/json');
 
-   var responseObj = {
-      results: [],
-      relatedTerms:[]
-   };
+   var searchResults = [],
+       relatedTerms = [];
   
    oboe({
       url: ELASTIC_SEARCH_HOST + '/products/_search',
@@ -146,11 +144,11 @@ function sendResultsJsonToClient(req, res, query, category) {
       
    }).node('!hits..{price productTitle}', function( result ) {
 
-      responseObj.results.push( prepareSearchResultForFrontEnd( result ) );
+      searchResults.push( prepareSearchResultForFrontEnd( result ) );
 
    }).node('!aggregations..{key score}', function( aggregationResult, path ) {
       
-      responseObj.relatedTerms.push({
+      relatedTerms.push({
          key:aggregationResult.key,
          score: aggregationResult.score,
          source:path[1]
@@ -158,9 +156,12 @@ function sendResultsJsonToClient(req, res, query, category) {
       
    }).done(function() {
       
-      responseObj.relatedTerms.sort(function(a,b){return b.score - a.score});
+      var responseObject = {
+         results : searchResults,
+         relatedTerms: relatedTerms.sort(function(a,b){return b.score - a.score})
+      };
       
-      res.send(200, responseObj);
+      res.send(200, responseObject);
    }).fail(function() {
       console.log('there was a failure'.red);
    });

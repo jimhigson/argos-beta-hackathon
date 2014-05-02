@@ -117,7 +117,7 @@ function servePageOrJson(req, res) {
    );
 
    if( req.query.json == 'true' ) {
-      serveJson(req, res, term, category);
+      sendResultsJsonToClient(req, res, term, category);
    } else {
       renderPage(res, term, category);
    }
@@ -143,7 +143,7 @@ function analyseCategories( response ) {
    });
 }
 
-function serveJson(req, res, query, category) {
+function sendResultsJsonToClient(req, res, query, category) {
 
    var queryTerms = priceRange(query),
        requestBody = elasticSearchRequestBody(

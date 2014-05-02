@@ -141,14 +141,14 @@ function sendResultsJsonToClient(req, res, query, category) {
       method:'POST',
       body: JSON.stringify(requestBody)
 
-   }).on('node:!.error', function(error) {
+   }).node('!error', function(error) {
       res.send('400', error);
       
-   }).on('node:!hits..{price productTitle}', function( result ) {
+   }).node('!hits..{price productTitle}', function( result ) {
 
       responseObj.results.push( prepareSearchResultForFrontEnd( result ) );
 
-   }).on('node:!aggregations..{key score}', function( aggregationResult, path ) {
+   }).node('!aggregations..{key score}', function( aggregationResult, path ) {
       
       responseObj.relatedTerms.push({
          key:aggregationResult.key,
@@ -156,7 +156,7 @@ function sendResultsJsonToClient(req, res, query, category) {
          source:path[1]
       });
       
-   }).on('done', function() {
+   }).done(function() {
       
       responseObj.relatedTerms.sort(function(a,b){return b.score - a.score});
       

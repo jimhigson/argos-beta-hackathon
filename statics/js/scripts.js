@@ -96,20 +96,22 @@ $(document).ready(function ($) {
          });
    }
    
+   function searchURL(term) {
+      return '/search/' + term + '?json=true';
+   }
+   
    function loadSearchResults() {
 
       var queryTerm = sanitiseQueryTerm(searchBox.val());
       
       if (queryTerm) {
          
-         var searchURL = '/search/' + queryTerm + '?json=true';
-
          if( currentRestTransport ) {
             currentRestTransport.abort();
          }
 
          currentRestTransport = oboe({
-            url: searchURL
+            url: searchURL(queryTerm)
          });
          
          handleResultsFromProductRest(currentRestTransport);

@@ -20,7 +20,8 @@ module.exports = function (term, minPrice, maxPrice, category) {
       "aggregations": {
          "sigTermFromCat": {"significant_terms": {"field": "category", "size": 10}},
          "sigTermFromName": {"significant_terms": {"field": "productTitle", "size": 10}},
-         "priceSpread": {"percentiles": {"field": "price", "percents": [33, 50, 66] }}
+         "priceSpread": {"percentiles": {"field": "price", "percents": [33, 50, 66] }},
+         "categories": { "terms": { "field": "category" }}
       },
 
       "filter": {

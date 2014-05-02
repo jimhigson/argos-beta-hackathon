@@ -148,15 +148,15 @@ function sendResultsJsonToClient(req, res, query, category) {
 
       searchResults.push( prepareSearchResultForFrontEnd( result ) );
 
-   }).node('!aggregations..{key score}', function( aggregationResult, path ) {
+   }).node('!aggregations..{key doc_count}', function( aggregationResult, path ) {
       
       relatedTerms.push({
          key:aggregationResult.key,
-         score: aggregationResult.score,
+         count: aggregationResult.doc_count,
          source:path[1]
       });
       
-   }).done(function() {
+   }).done(function(o) {
       
       var responseObject = {
          results : searchResults,
@@ -190,7 +190,7 @@ function postProcessRelatedTerms( query, terms ) {
    });
    
    var sorted = unduplicated.sort(function(a,b){
-      return b.score - a.score;
+      return b.doc_count - a.doc_count;
    }); 
    
    return sorted;

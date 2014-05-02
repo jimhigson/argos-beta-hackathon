@@ -24,21 +24,6 @@ $(document).ready(function ($) {
       results.find('img').unveil();
 
       showAvailability();
-      /*
-       if( data.categories.length > 1 ) {
-       data.categories.forEach(function (cat) {
-       var catNameInUrl = makeInputUrlFriendly(cat.name),
-       catLink = '/search/' + catNameInUrl + '/' + queryTerm,
-       catHtml = '<span class="category">' +
-       '<a href="' + catLink + '">' + cat.name + '</a>' +
-       //'<button class="close">' +
-       '</span>';
-
-       categories.append(catHtml);
-       });
-       }
-
-      categories.html('');*/
    }
    
    function showAvailability() {

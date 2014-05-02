@@ -156,12 +156,13 @@ function serveJson(req, res, query, category) {
 
    var responseObj = {
       results: [],
-      request: requestBody
+      relatedTerms:[]
    };
-
+  
    oboe({
       url: ELASTIC_SEARCH_HOST + '/products/_search',
-      body: requestBody
+      method:'POST',
+      body: JSON.stringify(requestBody)
 
    }).on('node:!.error', function(error) {
       res.send('400', error);
@@ -169,18 +170,33 @@ function serveJson(req, res, query, category) {
    }).on('node:!.hits.hits[*]._source', function( result ) {
 
       responseObj.results.push( prepareSearchResultForFrontEnd( result ) );
+
+   }).on('node:!.aggregations..{key score}', function( aggregationResult, path ) {
+      
+      responseObj.relatedTerms.push({
+         key:aggregationResult.key,
+         score: aggregationResult.score,
+         source:path[1]
+      });
       
    }).on('done', function() {
       
+      responseObj.relatedTerms.sort(function(a,b){return b.score - a.score});
+      
       res.send(200, responseObj);
+   }).fail(function() {
+      console.log('there was a failure'.red);
    });
 }
 
+function highlightedProductTitle(elasticSearchHit) {
+   return (elasticSearchHit.highlight && elasticSearchHit.highlight.productTitle) || elasticSearchHit.productTitle
+}
+
 function prepareSearchResultForFrontEnd( elasticSearchHit ) {
+   
 
-   var highlightedProductTitle = (elasticSearchHit.highlight && elasticSearchHit.highlight.productTitle) || elasticSearchHit.productTitle;
-
-   elasticSearchHit.highlightedProductTitle = highlightedProductTitle;
+   elasticSearchHit.highlightedProductTitle = highlightedProductTitle( elasticSearchHit );
    elasticSearchHit.formattedPrice = '£' + Number(elasticSearchHit.price).toFixed(2);
    
    return elasticSearchHit;

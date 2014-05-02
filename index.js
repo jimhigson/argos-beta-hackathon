@@ -152,7 +152,7 @@ function sendResultsJsonToClient(req, res, query, category) {
       
       relatedTerms.push({
          key:aggregationResult.key,
-         count: aggregationResult.doc_count,
+         doc_count: aggregationResult.doc_count,
          source:path[1]
       });
       

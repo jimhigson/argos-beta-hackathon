@@ -144,11 +144,11 @@ function sendResultsJsonToClient(req, res, query, category) {
    }).on('node:!.error', function(error) {
       res.send('400', error);
       
-   }).on('node:!.hits..{price productTitle}', function( result ) {
+   }).on('node:!hits..{price productTitle}', function( result ) {
 
       responseObj.results.push( prepareSearchResultForFrontEnd( result ) );
 
-   }).on('node:!.aggregations..{key score}', function( aggregationResult, path ) {
+   }).on('node:!aggregations..{key score}', function( aggregationResult, path ) {
       
       responseObj.relatedTerms.push({
          key:aggregationResult.key,

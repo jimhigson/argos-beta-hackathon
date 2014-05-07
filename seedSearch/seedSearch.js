@@ -50,10 +50,12 @@ if( argv.indexStores ) {
 if( argv.setup ) {
    console.log('setting up mappings etc');
 
+   var config = require('./settings.js');
+   
    request({
       url:     ELASTIC_SEARCH_URL + '/argos/',
       method:  'PUT',
-      body:    fs.readFileSync('settings.json')
+      body:    JSON.stringify(config)
    }, function(err, responseJson) {
       if( err ) {
          console.log(String(err).red);

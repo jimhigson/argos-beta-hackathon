@@ -51,17 +51,30 @@
     </header>
 
     <div id="categories"></div>   
+    <div id="related"></div>
     <div id="results"></div>
 
    <template id="resultTemplate">
-       <div class="searchResultBox" data-productId="\{{productId}}">
-           <img data-src="\{{imgUrl}}">
-           <span class="description">
-              <h3>\{{{highlightedProductTitle}}}</h3>
-              <span>\{{formattedPrice}}</span>
-           </span>
+      <div class="searchResultBox" data-productId="\{{productId}}">
+         <img data-src="\{{imgUrl}}">
+         <span class="description">
+            <h3>\{{{highlightedProductTitle}}}</h3>
+            <span>\{{formattedPrice}}</span>
+         </span>
+      </div>
+   </template>
+
+   <template id="relatedTemplate">
+       <div class="relatedItemBox" data-relatedTerm="\{{key}}">
+         {{#each imageUrls}}
+             <img data-src="\{{this}}">
+         {{/each}}
+         <span class="description">
+            <h3>\{{key}}</h3>
+         </span>
        </div>
    </template>
+
   
 </body>
 </html>

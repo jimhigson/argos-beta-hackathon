@@ -153,10 +153,11 @@ function sendResultsJsonToClient(req, res, query, category) {
       relatedTerms.push({
          key:aggregationResult.key,
          doc_count: aggregationResult.doc_count,
+         imageUrls:[],
          source:path[1]
       });
       
-   }).done(function(o) {
+   }).done(function() {
       
       var responseObject = {
          results : searchResults,
@@ -189,11 +190,9 @@ function postProcessRelatedTerms( query, terms ) {
       }
    });
    
-   var sorted = unduplicated.sort(function(a,b){
+   return unduplicated.sort(function(a,b){
       return b.doc_count - a.doc_count;
    }); 
-   
-   return sorted;
 }
 
 function highlightedProductTitle(elasticSearchHit) {

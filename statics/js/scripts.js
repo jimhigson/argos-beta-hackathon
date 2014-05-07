@@ -1,13 +1,15 @@
 
 $(document).ready(function ($) {
 
-   var resultTemplate = Handlebars.compile( $('template#resultTemplate').html() );
+   var resultTemplate  = Handlebars.compile( $('template#resultTemplate').html() );
+   var relatedTemplate = Handlebars.compile( $('template#relatedTemplate').html() );
       
    var currentStore;
    
    var searchBox = $('input.mainSearch');
    var storeSearch = $('.storeSearch');
    var results = $('#results');
+   var related = $('#related');
    var storesAutocomplete = $('#storesAutocomplete');
    var categories = $('#categories');
    var currentRestTransport = null;
@@ -72,11 +74,17 @@ $(document).ready(function ($) {
       return input.replace(/\s/g, '_');
    }
 
-   function clearResultsHtml() {
+   function clearSearchResultsHtml() {
       results.html('');
+      related.html('');
    }
+
+   function showRelatedTermFromSearchResult(relatedResult) {
+
+      related.append(relatedTemplate(relatedResult));
+   }   
    
-   function showProductAjaxResult(result) {
+   function showProductSearchResult(result) {
 
       var resultEle = $(resultTemplate(result));
       resultEle.find('img').unveil();
@@ -87,9 +95,10 @@ $(document).ready(function ($) {
       
       transport
          .start( function(){
-            clearResultsHtml();
+            clearSearchResultsHtml();
          })
-         .node('!results.*', showProductAjaxResult)
+         .node('!results.*', showProductSearchResult)
+         .node('!relatedTerms.*', showRelatedTermFromSearchResult)
          .done(function(){
             currentRestTransport = null;
             showAvailability();
@@ -117,7 +126,7 @@ $(document).ready(function ($) {
          handleResultsFromProductRest(currentRestTransport);
 
       } else {
-         clearResultsHtml();
+         clearSearchResultsHtml();
       }
    }
    

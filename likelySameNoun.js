@@ -22,6 +22,9 @@ module.exports = function likelySameNoun(term1, term2) {
 };
 
 function pluralOf( a, b ) {
+  
+   // synonymn (cycle vs bicycle)
+   // in wider context: match against all terms of query, not just first one
    
    if( a + 's' == b ) {
       return true;

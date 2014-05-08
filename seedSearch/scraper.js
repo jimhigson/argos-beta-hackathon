@@ -26,7 +26,8 @@ function scrapeSummary($) {
    try {
       return $('.fullDetails').html().trim();
    }catch(e) {
-      throw new Error('could not get summary ' + e);
+      throw new Error('could not get summary from html' + 
+                        $('.fullDetails').html() + e);
    }
 }
 
@@ -46,12 +47,24 @@ function scrapeSummaryFirstParagraph($) {
    }
 }
 
+function scrapeCategory($) {
+   var metaData, category;
+   try {
+
+      metaData = $('meta[name=keywords]').attr('content'),
+      category = metaData && metaData.split(',')[0].trim();
+
+      return category;
+
+   } catch(e) {
+      throw new Error('could not get category from keywords "' 
+         + metaData + '"' );
+   }
+}
+
 module.exports = function scrapeProductPage(productId, body) {
 
    var $ = cheerio.load(body);
-
-   var metaData = $('meta[name=keywords]').attr('content'),
-      category = metaData && metaData.split(',')[0].trim();
 
    return {
       productId:                 productId,
@@ -61,6 +74,6 @@ module.exports = function scrapeProductPage(productId, body) {
       summaryText:               scrapeSummaryText($),
       summaryFirstParagraph:     scrapeSummaryFirstParagraph($),
       imgUrl:                    'http://www.argos.co.uk/' + $('#mainimage').attr('src'),
-      category:                  category
+      category:                  scrapeCategory($)
    };
 };

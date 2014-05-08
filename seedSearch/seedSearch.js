@@ -3,6 +3,7 @@
 var MAX_SIMULTANEOUS_PAGE_REQUESTS = 50;
 var MAX_REQUEST_FREQUENCY_MS = 50;
 var ELASTIC_SEARCH_URL = 'http://localhost:9200';
+var LIVE_SITE_TIMEOUT = 4000; // 4 seconds before we give up
 
 var request = require('request');
 var scraper = require('./scraper.js');
@@ -85,23 +86,29 @@ function fetchAndScrapeProduct( productId, callback ) {
 
    var url = 'http://www.argos.co.uk/static/Product/partNumber/' + productId + '.htm';
    
-   request(url, function (error, res, body) {
+   request(
+      {  method:  'GET',
+         url:     url,
+         timeout: LIVE_SITE_TIMEOUT
+      },
+      function (error, res, body) {
             
-      if (!error && requestSuccessful(res)) {
-
-         try {
-            var productInfo = scraper(productId, body);
-            
-            productInfo.legacyUrl = url;
-            
-            callback(undefined, productInfo);
-         } catch(e) {
-            failedToScrape(e);
+         if (!error && requestWasSuccessful(res)) {
+   
+            try {
+               var productInfo = scraper(productId, body);
+               
+               productInfo.legacyUrl = url;
+               
+               callback(undefined, productInfo);
+            } catch(e) {
+               failedToScrape(e);
+            }
+         } else {
+            failedToScrape(error);
          }
-      } else {
-         failedToScrape(error);
       }
-   });
+   );
    
    function failedToScrape(error){
       var errorMsg = 'could not process ' + url + ':' + error;
@@ -114,32 +121,34 @@ var productsIdsToRequest = gaveRange? loadProductIdsInRange(argv.startIndex, arg
 var numberOfRequests = productsIdsToRequest.length; 
 var itemsSoFar = 0;
 var failedProducts = [];
+var numberOfPendingRequests = 0;
 
-var pendingRequests = 0;
+var interval = setInterval(requestNextIfMoreAreNeeded, MAX_REQUEST_FREQUENCY_MS);
 
-var interval = setInterval(function() {
-   
+function requestNextIfMoreAreNeeded() {
+
    var unrequestedProducts = (productsIdsToRequest.length != 0),
-       hasRequestSlots = pendingRequests < MAX_SIMULTANEOUS_PAGE_REQUESTS;
-   
+      hasRequestSlots = numberOfPendingRequests < MAX_SIMULTANEOUS_PAGE_REQUESTS;
+
    if( !unrequestedProducts ) {
-      
+
       clearInterval(interval);
       console.log('All products have been requested.');
-      
+
    } else {
 
       if( hasRequestSlots ) {
          spiderNextProduct();
+      } else {
       }
    }
-}, MAX_REQUEST_FREQUENCY_MS);
+}
 
 function elasticSearchProductUrl(productId) {
    return ELASTIC_SEARCH_URL + '/argos/products/' + productId;
 }
 
-function requestSuccessful(res) {
+function requestWasSuccessful(res) {
    var firstChar = String(res.statusCode)[0];
    return firstChar == '2';
 }
@@ -148,9 +157,9 @@ function handleElasticSearchPutResponse(error, res, body) {
    
    var url = res.request.uri.href;
    
-   pendingRequests--;
+   numberOfPendingRequests--; 
    
-   if (error || !requestSuccessful(res)) {
+   if (error || !requestWasSuccessful(res)) {
       var productJson = res.request.body.toString(),
           errorMsg = 'Could not PUT into index ' + url + ':' + error;
       
@@ -162,7 +171,7 @@ function handleElasticSearchPutResponse(error, res, body) {
    var percent = Math.round( 100 * itemsSoFar/numberOfRequests );
    console.log(String(itemsSoFar).blue, '(' + String(percent).green + '%) PUT item', String(url));
 
-   if( pendingRequests == 0 && productsIdsToRequest.length == 0 ) {
+   if( numberOfPendingRequests == 0 && productsIdsToRequest.length == 0 ) {
       console.log('All products PUT to ElasticSearch');
       if( failedProducts.length ) {
          console.log('there were some failures:'.red, failedProducts);
@@ -174,11 +183,13 @@ function handleElasticSearchPutResponse(error, res, body) {
 
 function spiderNextProduct() {
    var productId = productsIdsToRequest.pop();
-   pendingRequests++;
+   
+   numberOfPendingRequests++;
 
    fetchAndScrapeProduct(productId, function(err, productJson) {
 
       if( err ) {
+         numberOfPendingRequests--;
          console.log('ERROR'.red, 'could not get data from product', productId, err);
          failedProducts.push(productId);
          return;

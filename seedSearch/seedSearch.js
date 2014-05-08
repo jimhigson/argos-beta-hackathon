@@ -69,18 +69,27 @@ if( argv.setup ) {
    return;
 }
 
-function loadAllProductIds() {
-   
-   var fs = require('fs');
-   return JSON.parse(fs.readFileSync('numbers.json'));
+function loadAllProductIds( callback ) {
+      
+   fs.readFile('numbers.json', function( err, fileContents ) {
+      
+      callback( err, JSON.parse(fileContents) );
+   });
 }
 
-function loadProductIdsInRange( start, end ) {
+function loadProductIdsInRange( start, end, callback ) {
    
-   return loadAllProductIds().slice(start, end);
+   loadAllProductIds( function( err, fullList ) {
+      
+      callback(err, fullList.slice(start, end));
+      
+   });
 }
 
-
+function requestWasSuccessful(res) {
+   var firstChar = String(res.statusCode)[0];
+   return firstChar == '2';
+}
 
 function fetchAndScrapeProduct( productId, callback ) {
 
@@ -116,91 +125,94 @@ function fetchAndScrapeProduct( productId, callback ) {
    }
 }
 
+function startRequesting( err, productsIdsToRequest ) {
 
-var productsIdsToRequest = gaveRange? loadProductIdsInRange(argv.startIndex, argv.endIndex) : loadAllProductIds();
-var numberOfRequests = productsIdsToRequest.length; 
-var itemsSoFar = 0;
-var failedProducts = [];
-var numberOfPendingRequests = 0;
+   var numberOfRequests = productsIdsToRequest.length;
+   var itemsSoFar = 0;
+   var failedProducts = [];
+   var numberOfPendingRequests = 0;
 
-var interval = setInterval(requestNextIfMoreAreNeeded, MAX_REQUEST_FREQUENCY_MS);
+   var interval = setInterval(requestNextIfMoreAreNeeded, MAX_REQUEST_FREQUENCY_MS);
 
-function requestNextIfMoreAreNeeded() {
+   function requestNextIfMoreAreNeeded() {
 
-   var unrequestedProducts = (productsIdsToRequest.length != 0),
-      hasRequestSlots = numberOfPendingRequests < MAX_SIMULTANEOUS_PAGE_REQUESTS;
+      var unrequestedProducts = (productsIdsToRequest.length != 0),
+         hasRequestSlots = numberOfPendingRequests < MAX_SIMULTANEOUS_PAGE_REQUESTS;
 
-   if( !unrequestedProducts ) {
+      if (!unrequestedProducts) {
 
-      clearInterval(interval);
-      console.log('All products have been requested.');
+         clearInterval(interval);
+         console.log('All products have been requested.');
 
-   } else {
-
-      if( hasRequestSlots ) {
-         spiderNextProduct();
       } else {
+
+         if (hasRequestSlots) {
+            spiderNextProduct();
+         }
       }
    }
-}
 
-function elasticSearchProductUrl(productId) {
-   return ELASTIC_SEARCH_URL + '/argos/products/' + productId;
-}
-
-function requestWasSuccessful(res) {
-   var firstChar = String(res.statusCode)[0];
-   return firstChar == '2';
-}
-
-function handleElasticSearchPutResponse(error, res, body) {
-   
-   var url = res.request.uri.href;
-   
-   numberOfPendingRequests--; 
-   
-   if (error || !requestWasSuccessful(res)) {
-      var productJson = res.request.body.toString(),
-          errorMsg = 'Could not PUT into index ' + url + ':' + error;
-      
-      console.log('ERROR'.red, errorMsg, '\n', productJson, '\n', res.statusCode, body);
-      return;
+   function elasticSearchProductUrl(productId) {
+      return ELASTIC_SEARCH_URL + '/argos/products/' + productId;
    }
 
-   itemsSoFar++;
-   var percent = Math.round( 100 * itemsSoFar/numberOfRequests );
-   console.log(String(itemsSoFar).blue, '(' + String(percent).green + '%) PUT item', String(url));
+   function handleElasticSearchPutResponse(error, res, body) {
 
-   if( numberOfPendingRequests == 0 && productsIdsToRequest.length == 0 ) {
-      console.log('All products PUT to ElasticSearch');
-      if( failedProducts.length ) {
-         console.log('there were some failures:'.red, failedProducts);
-      }
-      process.exit(0);
-   }
-   
-}
+      var url = res.request.uri.href;
 
-function spiderNextProduct() {
-   var productId = productsIdsToRequest.pop();
-   
-   numberOfPendingRequests++;
+      numberOfPendingRequests--;
 
-   fetchAndScrapeProduct(productId, function(err, productJson) {
+      if (error || !requestWasSuccessful(res)) {
+         var productJson = res.request.body.toString(),
+            errorMsg = 'Could not PUT into index ' + url + ':' + error;
 
-      if( err ) {
-         numberOfPendingRequests--;
-         console.log('ERROR'.red, 'could not get data from product', productId, err);
-         failedProducts.push(productId);
+         console.log('ERROR'.red, errorMsg, '\n', productJson, '\n', res.statusCode, body);
          return;
       }
-      
-      var url = elasticSearchProductUrl(productId);
-      
-      request({
-         url: url,
-         method:'PUT',
-         body: JSON.stringify( productJson )
-      }, handleElasticSearchPutResponse);
-   });
+
+      itemsSoFar++;
+      var percent = Math.round( 100 * itemsSoFar/numberOfRequests );
+      console.log(String(itemsSoFar).blue, '(' + String(percent).green + '%) PUT item', String(url));
+
+      if( numberOfPendingRequests == 0 && productsIdsToRequest.length == 0 ) {
+         console.log('All products PUT to ElasticSearch');
+         if( failedProducts.length ) {
+            console.log('there were some failures:'.red, failedProducts);
+         }
+         process.exit(0);
+      }
+
+   }
+
+   function spiderNextProduct() {
+      var productId = productsIdsToRequest.pop();
+
+      numberOfPendingRequests++;
+
+      fetchAndScrapeProduct(productId, function(err, productJson) {
+
+         if( err ) {
+            numberOfPendingRequests--;
+            console.log('ERROR'.red, 'could not get data from product', productId, err);
+            failedProducts.push(productId);
+            return;
+         }
+
+         var url = elasticSearchProductUrl(productId);
+
+         request({
+            url: url,
+            method:'PUT',
+            body: JSON.stringify( productJson )
+         }, handleElasticSearchPutResponse);
+      });
+   }
+   
 }
+
+if( gaveRange ) {
+   loadProductIdsInRange(argv.startIndex, argv.endIndex, startRequesting)
+} else {
+   loadAllProductIds(startRequesting);
+}
+

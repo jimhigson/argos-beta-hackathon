@@ -7,6 +7,7 @@ var LIVE_SITE_TIMEOUT = 4000; // 4 seconds before we give up
 
 var request = require('request');
 var scraper = require('./scraper.js');
+var getProductList = require('./productList.js');
 var fs = require('fs');
 require('http').globalAgent.maxSockets = MAX_SIMULTANEOUS_PAGE_REQUESTS;
 require('colors');
@@ -70,10 +71,9 @@ if( argv.setup ) {
 }
 
 function loadAllProductIds( callback ) {
-      
-   fs.readFile('numbers.json', function( err, fileContents ) {
-      
-      callback( err, JSON.parse(fileContents) );
+
+   getProductList(function( err, urlsArray ) {
+      callback( err, urlsArray );
    });
 }
 

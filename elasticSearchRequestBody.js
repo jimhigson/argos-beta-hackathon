@@ -17,12 +17,13 @@ module.exports = function (term, minPrice, maxPrice, category) {
          }
       },
 
+      /* this needs elastic search 1.1 which currently isn't on vichub  
       "aggregations": {
          "sigTermFromCat": {"significant_terms": {"field": "category", "size": 10}},
          "sigTermFromName": {"significant_terms": {"field": "productTitle", "size": 10}},
          "priceSpread": {"percentiles": {"field": "price", "percents": [33, 50, 66] }},
          "categories": { "terms": { "field": "category" }}
-      },
+      },*/
 
       "filter": {
          and: [

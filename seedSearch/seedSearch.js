@@ -2,8 +2,8 @@
 
 var MAX_SIMULTANEOUS_PAGE_REQUESTS = 50;
 var MAX_REQUEST_FREQUENCY_MS = 50;
-var ELASTIC_SEARCH_URL = 'http://localhost:9200';
-var LIVE_SITE_TIMEOUT = 4000; // 4 seconds before we give up
+var ELASTIC_SEARCH_URL = 'http://vichub.co.uk:9200';
+var LIVE_SITE_TIMEOUT = 6000; // 6 seconds before we give up
 
 var request = require('request');
 var scraper = require('./scraper.js');
@@ -50,12 +50,14 @@ if( argv.indexStores ) {
 }
 
 if( argv.setup ) {
-   console.log('setting up mappings etc');
+   var settingsUrl = ELASTIC_SEARCH_URL + '/argos/';
+   
+   console.log('setting up mappings etc at', settingsUrl.blue);
 
    var config = require('./settings.js');
-   
+
    request({
-      url:     ELASTIC_SEARCH_URL + '/argos/',
+      url: settingsUrl,
       method:  'PUT',
       body:    JSON.stringify(config)
    }, function(err, responseJson) {

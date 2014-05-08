@@ -1,6 +1,6 @@
 {
-  "name": "hackathon",
-  "version": "0.0.0",
+  "name": "argosbeta",
+  "version": "0.0.0-6",
   "description": "A hacking search experience",
   "main": "index.js",
   "dependencies": {
@@ -8,25 +8,22 @@
     "colors": "^0.6.2",
     "consolidate": "^0.10.0",
     "express": "~4.0.0",
-    "get-json": "0.0.1",
+    "handlebars": "^2.0.0-alpha.2",
+    "minimist": "0.0.8",
+    "oboe": "^1.14.3",
+    "request": "^2.34.0",
+    "underscore": "^1.6.0",
+    "xml2js": "0.4.x"
+  },
+  "devDependencies": {
+    "jasmine-node": "^1.14.3",
     "grunt": "^0.4.4",
     "grunt-contrib-compress": "^0.8.0",
     "grunt-contrib-cssmin": "^0.9.0",
     "grunt-contrib-uglify": "^0.4.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-develop": "^0.3.0",
-    "grunt-sass": "^0.12.1",
-    "handlebars": "^2.0.0-alpha.2",
-    "minimist": "0.0.8",
-    "oboe": "^1.14.3",
-    "request": "^2.34.0",
-    "underscore": "^1.6.0",
-    "xml2js": "0.4.x",
-    "xmldom": "^0.1.19",
-    "xpath": "0.0.6"
-  },
-  "devDependencies": {
-    "jasmine-node": "^1.14.3"
+    "grunt-sass": "^0.12.1"
   },
   "scripts": {
     "test": "grunt test",
@@ -46,5 +43,9 @@
   "bugs": {
     "url": "https://github.com/jimhigson/googos/issues"
   },
-  "homepage": "https://github.com/jimhigson/googos"
+  "homepage": "https://github.com/jimhigson/googos",
+  "subdomain": "argosbeta",
+  "engines": {
+    "node": "0.10.x"
+  }
 }

@@ -1,6 +1,6 @@
 var PORT = 6677,
-    //ELASTIC_SEARCH_HOST = 'http://beta.vichub.co.uk:9200/argos',
-    ELASTIC_SEARCH_HOST = 'http://localhost:9200/argos',
+    ELASTIC_SEARCH_HOST = 'http://beta.vichub.co.uk:9200/argos',
+    //ELASTIC_SEARCH_HOST = 'http://localhost:9200/argos',
 
     express = require('express'),
     request = require('request'),
@@ -166,7 +166,7 @@ function sendResultsJsonToClient(req, res, query, category) {
       res.send(200, responseObject);
    }).fail(function(e) {
       res.send(400, 'there was a failure');
-      console.log('there was a failure'.red);
+      console.log('there was a failure'.red, e);
    });
 }
 

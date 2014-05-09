@@ -131,6 +131,10 @@ input.storeSearch , #storesAutocomplete {
   text-align: left;
 }
 
+.searchResultBox .reserve:focus
+{   outline:none;
+}
+
 .searchResultBox .reserve.waiting {
   background-color: #B4B4B4;
 }

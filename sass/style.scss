@@ -112,8 +112,10 @@ input.storeSearch , #storesAutocomplete {
   width: 200px;
   margin: 13px;
   padding:0;
+  padding-bottom:2.2em;
   display:inline-block;
   transition:opacity;
+  position:relative;
 }
 
 .searchResultBox .reserve {
@@ -122,6 +124,9 @@ input.storeSearch , #storesAutocomplete {
   border:none;
   color:white;
   padding:6px;
+  position:absolute;
+  bottom:-1px;
+  left:0;
 }
 
 .outOfStock {

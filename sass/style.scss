@@ -116,6 +116,7 @@ input.storeSearch , #storesAutocomplete {
   display:inline-block;
   transition:opacity;
   position:relative;
+  text-align: left;
 }
 
 .searchResultBox .reserve {
@@ -127,6 +128,7 @@ input.storeSearch , #storesAutocomplete {
   position:absolute;
   bottom:-1px;
   left:0;
+  text-align: left;
 }
 
 .searchResultBox .reserve .inactive,
@@ -170,7 +172,7 @@ input.storeSearch , #storesAutocomplete {
     height:2.5em;
 }
 
-.searchResultBox span {
+.searchResultBox span.price {
   font-size: 16px;
   font-weight: bold;
 }

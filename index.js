@@ -7,6 +7,7 @@ var PORT = 6677,
     oboe = require('oboe'),
     consolidate = require('consolidate'),
     parseString = require('xml2js').parseString,
+    handlebars = require('handlebars'),
    
     parsePriceRange = require('./parsePriceRange.js'),
     elasticSearchRequestBody = require('./elasticSearchRequestBody.js'),
@@ -56,6 +57,7 @@ app
    .get('/search/:category/:term',  servePageOrJson )
    .get('/stores/:term', serveStoreJson)
    .get('/stockInfo/:storeNumber/:partNumbers', getStockInfo )
+   .get('/makeReservation/:productNumber', makeReservation )
    .use(express.static('statics'));
 
 app.listen(PORT);
@@ -271,4 +273,41 @@ function makeXMLRequestBody(partNumbers, storeNumber, callback) {
    }, function(error, response) {
       callback(response.body);
    });
+}
+
+function makeReservation( req, res ) {
+
+  // Grab reservation in from url
+  var reservationData = {
+    storeNumber: req.query.storeId,
+    productNumber: req.params.productNumber,
+    customerEmail: 'example@example.com',
+    qtyRequired: '1',
+    mobileNo: '07777777777'
+  }
+
+  // Create reservation string
+  var reservationRequestTemplate = 'locationNumber={{storeNumber}}@51.49487,-0.14196&productNumber={{productNumber}}&customerEmail={{customerEmail}}&qtyRequired={{qtyRequired}}&hrgOptIn=false&thirdPartyOptIn=false&customerPhone=&contactNo=&mobileNo=';
+
+  var template = handlebars.compile(reservationRequestTemplate);
+
+  reservationRequest = template(reservationData);
+
+  console.log(reservationRequest);
+
+  request({
+    url: 'http://api.argos.co.uk/reservation/create?apiKey=uk4tbngzceyxpwwvfcbtkvkj',
+    method: 'POST',
+    body: reservationRequest,
+    headers: {
+      'Content-Type': 'text/plain;charset=UTF-8'
+    }
+  }, function( err, response ) {
+
+  // Turn response in to JSON :D
+  parseString(response.body, function( err, result) {
+      res.setHeader('Content-Type', 'application/json')
+      res.send(result);
+    });
+  });
 }

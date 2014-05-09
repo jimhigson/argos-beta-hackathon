@@ -284,7 +284,7 @@ function makeReservation( req, res ) {
     customerEmail: 'example@example.com',
     qtyRequired: '1',
     mobileNo: '07777777777'
-  }
+  };
 
   // Create reservation string
   var reservationRequestTemplate = 'locationNumber={{storeNumber}}@51.49487,-0.14196&productNumber={{productNumber}}&customerEmail={{customerEmail}}&qtyRequired={{qtyRequired}}&hrgOptIn=false&thirdPartyOptIn=false&customerPhone=&contactNo=&mobileNo=';

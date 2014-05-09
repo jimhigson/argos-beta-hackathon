@@ -111,7 +111,7 @@ input.storeSearch , #storesAutocomplete {
   background: #fff;
   width: 200px;
   margin: 13px;
-  padding:0;
+  padding: 8px;
   padding-bottom:2.2em;
   display:inline-block;
   transition:opacity;
@@ -127,6 +127,17 @@ input.storeSearch , #storesAutocomplete {
   position:absolute;
   bottom:-1px;
   left:0;
+}
+
+.searchResultBox .reserve .inactive,
+.searchResultBox .reserve .waiting,
+.searchResultBox .reserve .done {
+  display:none;
+}
+.searchResultBox .reserve.inactive .inactive,
+.searchResultBox .reserve.waiting .waiting,
+.searchResultBox .reserve.done .done {
+  display:block;
 }
 
 .outOfStock {

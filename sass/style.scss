@@ -112,7 +112,6 @@ input.storeSearch , #storesAutocomplete {
   width: 200px;
   margin: 13px;
   padding: 8px;
-  padding-bottom:2.2em;
   display:inline-block;
   transition:opacity;
   position:relative;
@@ -124,15 +123,15 @@ body:not([data-storeId]) .searchResultBox .reserve {
 }
 
 .searchResultBox .reserve {
-  width:100%;
   background-color: #DA061C;
   border:none;
   color:white;
   padding:6px;
   position:absolute;
   bottom:-1px;
-  left:0;
+  right:0;
   text-align: left;
+  height:36px;
 }
 
 .searchResultBox .reserve:focus
@@ -143,29 +142,12 @@ body:not([data-storeId]) .searchResultBox .reserve {
   background-color: #B4B4B4;
 }
 
-@-webkit-keyframes rotate {
-  from {
-    -webkit-transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
 .searchResultBox .reserve.waiting .icon {
-  -webkit-animation-name:             rotate;
-  -webkit-animation-duration:         1.5s;
-  -webkit-animation-iteration-count:  infinite;
-  -webkit-transition-timing-function: linear;
-}
-
-.searchResultBox .icon {
-  position:absolute;
-  right:0;
-  bottom:0;
-
   width: 20px;
-  height: 20px;  
+  height: 20px;
+  background: #DA061C url('../img/spinner.gif') 50% 50% no-repeat;
+  background-size:12px;
+  display:inline-block;
 }
 
 .searchResultBox .reserve .inactive,

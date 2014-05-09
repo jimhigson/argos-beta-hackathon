@@ -154,7 +154,7 @@ $(document).ready(function ($) {
       storeSearch.val('');
    });
    
-   $('#results').on('click', 'button.reserve.inactive', function() {
+   $('#results').on('click', '.searchResultBox:not(.outOfStock) button.reserve.inactive', function() {
       var reserveButton = $(this),
           productItem = reserveButton.parent('.searchResultBox'),
           productId = productItem.data('productid');
@@ -169,6 +169,8 @@ $(document).ready(function ($) {
       oboe(reservationUrl)
          .node('reservationNumber[*]', function(reservationCode){
             console.log('the code is', reservationCode);
+            
+            reserveButton.find('.number').text(reservationCode);
          })
          .done(function() {
             reserveButton.removeClass('waiting');

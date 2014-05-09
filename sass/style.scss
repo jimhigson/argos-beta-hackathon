@@ -122,6 +122,10 @@ body:not([data-storeId]) .searchResultBox .reserve {
   opacity:0;
 }
 
+.searchResultBox .inactive {
+  cursor:pointer;
+}
+
 .searchResultBox .reserve {
   background-color: #DA061C;
   border:none;

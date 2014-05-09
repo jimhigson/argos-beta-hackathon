@@ -156,7 +156,7 @@ $(document).ready(function ($) {
    
    $('#results').on('click', '.searchResultBox:not(.outOfStock) button.reserve.inactive', function() {
       var reserveButton = $(this),
-          productItem = reserveButton.parent('.searchResultBox'),
+          productItem = reserveButton.closest('.searchResultBox'),
           productId = productItem.data('productid');
       
       console.log('you want to reserve product', productId);

@@ -49,8 +49,7 @@ $(document).ready(function ($) {
    }
    
    function handleStoreRequest(data) {
-      storesAutocomplete.html('');
-      storesAutocomplete.hide();
+      hideStoreAutocomplete()
       data.hits.hits.forEach( function (hit) {
          var store = hit._source;
          
@@ -149,6 +148,7 @@ $(document).ready(function ($) {
    }
    
    function hideStoreAutocomplete() {
+      storesAutocomplete.html('');
       storesAutocomplete.hide();
    }
 

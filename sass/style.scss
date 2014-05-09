@@ -100,6 +100,10 @@ input.storeSearch , #storesAutocomplete {
 #storesAutocomplete {
     padding-left:14px;
     z-index: 1;
+    -moz-box-shadow:    2px 2px 2px 2px #ccc;
+    -webkit-box-shadow: 2px 2px 2px 2px #ccc;
+    box-shadow:         2px 2px 2px 2px #ccc;
+    display:none;
 }
 
 #auto-complete {

@@ -49,7 +49,8 @@ $(document).ready(function ($) {
    }
    
    function handleStoreRequest(data) {
-      storesAutocomplete.html('');   
+      storesAutocomplete.html('');
+      storesAutocomplete.hide();
       data.hits.hits.forEach( function (hit) {
          var store = hit._source;
          
@@ -60,9 +61,14 @@ $(document).ready(function ($) {
                          '">' + 
                            store.name + 
                         '</div>';   
-         storesAutocomplete.append(html);   
-      });   
-   }   
+         storesAutocomplete.append(html);
+
+      });
+        if (data.hits.hits.length > 0) {
+            storesAutocomplete.show();
+        }
+
+   }
    
    function sanitiseQueryTerm(term) {
       return term.trim().replace(/\s+/g, '_').replace(/\//g, '');
@@ -128,8 +134,6 @@ $(document).ready(function ($) {
 
       if (queryTerm) {
 
-         storesAutocomplete.show();
-
          var storesURL = '/stores/' + queryTerm;
 
          if( currentRestTransport ) {
@@ -140,7 +144,7 @@ $(document).ready(function ($) {
             url: storesURL
          }).done(handleStoreRequest);
       } else {
-         storesAutocomplete.html('');
+          hideStoreAutocomplete();
       }
    }
    

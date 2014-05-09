@@ -146,7 +146,7 @@ body:not([data-storeId]) .searchResultBox .reserve {
 .searchResultBox .reserve.waiting .icon {
   width: 20px;
   height: 20px;
-  background: #DA061C url('../img/spinner.gif') 50% 50% no-repeat;
+  background: #DA061C url('../img/spinner2.gif') 50% 50% no-repeat;
   background-size:12px;
   display:inline-block;
 }
@@ -189,12 +189,28 @@ body:not([data-storeId]) .searchResultBox .reserve {
     width: 200px;
     margin-bottom: 1px;
     margin-top: 3px;
-    height:2.5em;
+    height:5.5em;
+    line-height: 133%;
 }
 
-.searchResultBox span.price {
+.searchResultBox .buy {
+  display: block;
+  border-top: 1px #c2c2c2 solid;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+}
+
+.searchResultBox .buy .price {
+  position: relative;
   font-size: 16px;
   font-weight: bold;
+  margin-top: 8px;
+  display: inline-block;
+  margin-left: 8px;  
 }
 
 #logo img {

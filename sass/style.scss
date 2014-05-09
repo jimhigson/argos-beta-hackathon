@@ -139,6 +139,22 @@ input.storeSearch , #storesAutocomplete {
   background-color: #B4B4B4;
 }
 
+@-webkit-keyframes rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+.searchResultBox .reserve.waiting .icon {
+  -webkit-animation-name:             rotate;
+  -webkit-animation-duration:         1.5s;
+  -webkit-animation-iteration-count:  infinite;
+  -webkit-transition-timing-function: linear;
+}
+
 .searchResultBox .icon {
   position:absolute;
   right:0;

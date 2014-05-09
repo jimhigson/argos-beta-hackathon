@@ -119,6 +119,10 @@ input.storeSearch , #storesAutocomplete {
   text-align: left;
 }
 
+body:not([data-storeId]) .searchResultBox .reserve {
+  display:none;
+}
+
 .searchResultBox .reserve {
   width:100%;
   background-color: #DA061C;

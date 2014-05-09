@@ -182,6 +182,7 @@ $(document).ready(function ($) {
    $('#storesAutocomplete').on('click', '.storeResult', function() {
       currentStore = $(event.target).data('storeid');
 
+      $('body').attr('data-storeId', currentStore);
       console.log('your store is now', currentStore);
       
       storeSearch.val( $(event.target).data('name') );

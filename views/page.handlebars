@@ -58,9 +58,13 @@
            <img data-src="\{{imgUrl}}">
            <span class="description">
               <h3>\{{{highlightedProductTitle}}}</h3>
-              <span>\{{formattedPrice}}</span>
+              <span class="price">\{{formattedPrice}}</span>
            </span>
-           <button>Reserve</button>
+           <button class="reserve inactive">
+               <span class="inactive">Reserve</span>
+               <span class="waiting">Reserve<span class="icon">!!</span></span>
+               <span class="done">Reserved<span class="icon"></span></span>
+           </button>
        </div>
    </template>
   

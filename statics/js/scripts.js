@@ -163,6 +163,17 @@ $(document).ready(function ($) {
 
       reserveButton.removeClass('inactive');
       reserveButton.addClass('waiting');
+      
+      var reservationUrl = '/makeReservation/' + productId + '?storeId=' + currentStore;
+      
+      oboe(reservationUrl)
+         .node('reservationCode', function(reservationCode){
+            console.log('the code is', reservationCode);
+         })
+         .done(function() {
+            reserveButton.removeClass('waiting');
+            reserveButton.addClass('done');
+         });
    });
    
    loadSearchResults();

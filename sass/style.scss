@@ -178,6 +178,8 @@ body:not([data-storeId]) .searchResultBox .reserve {
 .searchResultBox img {
   width: 180px;
   height: 180px;
+  display: block;
+  margin: auto;
 }
 .searchResultBox .description {
     display:inline-block;

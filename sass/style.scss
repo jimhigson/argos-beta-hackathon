@@ -111,9 +111,17 @@ input.storeSearch , #storesAutocomplete {
   background: #fff;
   width: 200px;
   margin: 13px;
-  padding: 10px;
+  padding:0;
   display:inline-block;
   transition:opacity;
+}
+
+.searchResultBox .reserve {
+  width:100%;
+  background-color: #DA061C;
+  border:none;
+  color:white;
+  padding:6px;
 }
 
 .outOfStock {

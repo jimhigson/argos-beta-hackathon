@@ -58,6 +58,7 @@ app
    .get('/stores/:term', serveStoreJson)
    .get('/stockInfo/:storeNumber/:partNumbers', getStockInfo )
    .get('/makeReservation/:productNumber', makeReservation )
+   .get('/makeReservationStub/:productNumber', makeReservationStub )
    .use(express.static('statics'));
 
 app.listen(PORT);
@@ -102,26 +103,6 @@ function servePageOrJson(req, res) {
    } else {
       renderPage(res, term, category);
    }
-}
-
-function analyseCategories( response ) {
-   
-   var cats = {},
-       orderedCats = [];
-   
-   response.hits.hits.forEach(function( item ) {
-
-      var categoryName = item._source.category; 
-      cats[categoryName] = cats[categoryName]? cats[categoryName]+1 : 1; 
-   });
-
-   for( var name in cats ) {
-      orderedCats.push( {name: name, number:cats[name]} );
-   }
-   
-   return orderedCats.sort(function(a,b) {
-      return b.number - a.number;
-   });
 }
 
 function sendResultsJsonToClient(req, res, query, category) {
@@ -306,8 +287,26 @@ function makeReservation( req, res ) {
 
   // Turn response in to JSON :D
   parseString(response.body, function( err, result) {
-      res.setHeader('Content-Type', 'application/json')
+      res.setHeader('Content-Type', 'application/json');
       res.send(result);
     });
   });
+}
+
+function makeReservationStub( req, res ) {
+
+   var response = {"reservations": 
+      {"reservation": [
+         {"csoReservation": ["false"], "storeNumber": ["440"], "reservationNumber": ["390756"], "latestInStoreCollectionDate": ["2014-05-10"], "emailSent": ["true"], "smsSent": ["false"], "reservationItems": [
+            {"reservationItem": [
+               {"productNumber": ["6501455"], "reqQty": ["1"], "reservationStatus": ["success"], "allocQty": ["1"]}
+            ]}
+      ]}
+   ]}};
+
+   res.setHeader('Content-Type', 'application/json');
+   
+   setTimeout(function() {
+      res.send(JSON.stringify(response));
+   }, 2000);
 }

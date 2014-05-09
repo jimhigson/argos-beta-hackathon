@@ -164,7 +164,7 @@ $(document).ready(function ($) {
       reserveButton.removeClass('inactive');
       reserveButton.addClass('waiting');
       
-      var reservationUrl = '/makeReservation/' + productId + '?storeId=' + currentStore;
+      var reservationUrl = '/makeReservationStub/' + productId + '?storeId=' + currentStore;
       
       oboe(reservationUrl)
          .node('reservationNumber[*]', function(reservationCode){

@@ -154,10 +154,19 @@ $(document).ready(function ($) {
       storeSearch.val('');
    });
    
+   $('#results').on('click', 'button.reserve.inactive', function() {
+      var reserveButton = $(this),
+          productItem = reserveButton.parent('.searchResultBox'),
+          productId = productItem.data('productid');
+      
+      alert('you want to reserve product ' + productId);
+
+   });
+   
    loadSearchResults();
    $('#search').sticky();
    
-   $('#storesAutocomplete').on('click', '.storeResult', function( evt ) {
+   $('#storesAutocomplete').on('click', '.storeResult', function() {
       currentStore = $(event.target).data('storeid');
 
       console.log('your store is now', currentStore);
@@ -167,4 +176,5 @@ $(document).ready(function ($) {
       showAvailability();
       hideStoreAutocomplete();
    });
+      
 });

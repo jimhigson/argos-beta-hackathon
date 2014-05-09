@@ -131,6 +131,12 @@ input.storeSearch , #storesAutocomplete {
   text-align: left;
 }
 
+.searchResultBox .icon {
+  position:absolute;
+  right:0;
+  bottom:0;
+}
+
 .searchResultBox .reserve .inactive,
 .searchResultBox .reserve .waiting,
 .searchResultBox .reserve .done {

@@ -167,7 +167,7 @@ $(document).ready(function ($) {
       var reservationUrl = '/makeReservation/' + productId + '?storeId=' + currentStore;
       
       oboe(reservationUrl)
-         .node('reservationCode', function(reservationCode){
+         .node('reservationNumber[*]', function(reservationCode){
             console.log('the code is', reservationCode);
          })
          .done(function() {

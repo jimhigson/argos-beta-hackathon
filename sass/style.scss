@@ -135,7 +135,7 @@ input.storeSearch , #storesAutocomplete {
 {   outline:none;
 }
 
-.searchResultBox .reserve.waiting {
+.searchResultBox .reserve.done {
   background-color: #B4B4B4;
 }
 
@@ -159,6 +159,9 @@ input.storeSearch , #storesAutocomplete {
   position:absolute;
   right:0;
   bottom:0;
+
+  width: 20px;
+  height: 20px;  
 }
 
 .searchResultBox .reserve .inactive,

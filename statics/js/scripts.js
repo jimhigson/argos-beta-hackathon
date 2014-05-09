@@ -159,8 +159,10 @@ $(document).ready(function ($) {
           productItem = reserveButton.parent('.searchResultBox'),
           productId = productItem.data('productid');
       
-      alert('you want to reserve product ' + productId);
+      console.log('you want to reserve product', productId);
 
+      reserveButton.removeClass('inactive');
+      reserveButton.addClass('waiting');
    });
    
    loadSearchResults();

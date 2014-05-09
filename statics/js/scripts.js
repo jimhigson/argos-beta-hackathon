@@ -154,7 +154,12 @@ $(document).ready(function ($) {
       storeSearch.val('');
    });
    
-   $('#results').on('click', 'body[data-storeId] .searchResultBox:not(.outOfStock) button.reserve.inactive', function() {
+   $('#results').on('click', '.searchResultBox:not(.outOfStock) button.reserve.inactive', function() {
+      
+      if(!currentStore) {
+         return;
+      }
+      
       var reserveButton = $(this),
           productItem = reserveButton.closest('.searchResultBox'),
           productId = productItem.data('productid');

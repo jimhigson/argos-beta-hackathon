@@ -1,43 +1,18 @@
 var request = require('request'),
-    xml2js = require('xml2js');
-
-var XML_2_JS_OPTIONS = {
-
-   tagNameProcessors: [xml2js.processors.stripPrefix],
-   attrNameProcessors: [xml2js.processors.stripPrefix]
-};
+    parseStockApiResponse = require('./parseStockApiResponse.js');
 
 module.exports = function getStockInfo(req, res) {
 
    var partNumbers = req.params.partNumbers.split(','),
-       storeNumber = req.params.storeNumber,
-       avilabilityMap = [];
+       storeNumber = req.params.storeNumber;
 
-   makeXMLRequestBody(partNumbers, storeNumber, function(xml) {
+   makeXMLRequestBody(partNumbers, storeNumber, function( xml ) {
 
-      xml2js.parseString(xml, XML_2_JS_OPTIONS, function(err, result) {
-         
-         try {
-            
-            var items = result.Stock.AvailabilityList[0].Availability[0].Basket[0].ItemList[0].Item;
-            
-            items.forEach(function(stockItem) {
+      parseStockApiResponse(xml, function(err, stockJson) {
 
-               var partNumber = stockItem.$.id;
-               var availability = stockItem.Status[0]._;
-
-               avilabilityMap.push({partNumber: partNumber, availability: availability});
-            });
-
-            res.setHeader('Content-Type', 'application/json');
-            res.send(avilabilityMap);
-         } catch(e) {
-            // Make this never happen, Steven!
-            console.log('something went wrong handling a response');
-            res.setHeader('Content-Type', 'application/json');
-            res.send([]);
-         }
-      })
+         res.setHeader('Content-Type', 'application/json');
+         res.send(stockJson);
+      });
    });
 
    function makeXMLRequestBody(partNumbers, storeNumber, callback) {

@@ -21,14 +21,13 @@ module.exports = function getStockInfo(req, res) {
             
             var items = result.Stock.AvailabilityList[0].Availability[0].Basket[0].ItemList[0].Item;
             
-            for (var i = 0; i < items.length; i++) {
-               var stockItem = items[i];
+            items.forEach(function(stockItem) {
 
                var partNumber = stockItem.$.id;
                var availability = stockItem.Status[0]._;
 
                avilabilityMap.push({partNumber: partNumber, availability: availability});
-            }
+            });
 
             res.setHeader('Content-Type', 'application/json');
             res.send(avilabilityMap);

@@ -15,8 +15,6 @@ module.exports = function getStockInfo(req, res) {
 
    makeXMLRequestBody(partNumbers, storeNumber, function(xml) {
 
-      console.log(xml);
-      
       xml2js.parseString(xml, XML_2_JS_OPTIONS, function(err, result) {
          
          try {

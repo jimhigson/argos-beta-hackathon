@@ -1,6 +1,6 @@
 {
   "name": "argosbeta",
-  "version": "0.0.0-6",
+  "version": "0.0.0-11",
   "description": "A hacking search experience",
   "main": "index.js",
   "dependencies": {
@@ -8,7 +8,7 @@
     "colors": "^0.6.2",
     "consolidate": "^0.10.0",
     "express": "~4.0.0",
-    "handlebars": "^2.0.0-alpha.2",
+    "handlebars": "~2.0.0-alpha.2",
     "minimist": "0.0.8",
     "oboe": "^1.14.3",
     "request": "^2.34.0",

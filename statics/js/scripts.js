@@ -49,7 +49,7 @@ $(document).ready(function ($) {
    }
    
    function handleStoreRequest(data) {
-      storesAutocomplete.html('');   
+      hideStoreAutocomplete()
       data.hits.hits.forEach( function (hit) {
          var store = hit._source;
          
@@ -60,9 +60,14 @@ $(document).ready(function ($) {
                          '">' + 
                            store.name + 
                         '</div>';   
-         storesAutocomplete.append(html);   
-      });   
-   }   
+         storesAutocomplete.append(html);
+
+      });
+        if (data.hits.hits.length > 0) {
+            storesAutocomplete.show();
+        }
+
+   }
    
    function sanitiseQueryTerm(term) {
       return term.trim().replace(/\s+/g, '_').replace(/\//g, '');
@@ -128,8 +133,6 @@ $(document).ready(function ($) {
 
       if (queryTerm) {
 
-         storesAutocomplete.show();
-
          var storesURL = '/stores/' + queryTerm;
 
          if( currentRestTransport ) {
@@ -140,11 +143,12 @@ $(document).ready(function ($) {
             url: storesURL
          }).done(handleStoreRequest);
       } else {
-         storesAutocomplete.html('');
+          hideStoreAutocomplete();
       }
    }
    
    function hideStoreAutocomplete() {
+      storesAutocomplete.html('');
       storesAutocomplete.hide();
    }
 
@@ -154,12 +158,42 @@ $(document).ready(function ($) {
       storeSearch.val('');
    });
    
+   $('#results').on('click', '.searchResultBox:not(.outOfStock) button.reserve.inactive', function() {
+      
+      if(!currentStore) {
+         return;
+      }
+      
+      var reserveButton = $(this),
+          productItem = reserveButton.closest('.searchResultBox'),
+          productId = productItem.data('productid');
+      
+      console.log('you want to reserve product', productId);
+
+      reserveButton.removeClass('inactive');
+      reserveButton.addClass('waiting');
+      
+      var reservationUrl = '/makeReservationStub/' + productId + '?storeId=' + currentStore;
+      
+      oboe(reservationUrl)
+         .node('reservationNumber[*]', function(reservationCode){
+            console.log('the code is', reservationCode);
+            
+            reserveButton.find('.number').text(reservationCode);
+         })
+         .done(function() {
+            reserveButton.removeClass('waiting');
+            reserveButton.addClass('done');
+         });
+   });
+   
    loadSearchResults();
    $('#search').sticky();
    
-   $('#storesAutocomplete').on('click', '.storeResult', function( evt ) {
+   $('#storesAutocomplete').on('click', '.storeResult', function() {
       currentStore = $(event.target).data('storeid');
 
+      $('body').attr('data-storeId', currentStore);
       console.log('your store is now', currentStore);
       
       storeSearch.val( $(event.target).data('name') );
@@ -167,4 +201,5 @@ $(document).ready(function ($) {
       showAvailability();
       hideStoreAutocomplete();
    });
+      
 });

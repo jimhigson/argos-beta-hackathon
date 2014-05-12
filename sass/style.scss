@@ -100,6 +100,10 @@ input.storeSearch , #storesAutocomplete {
 #storesAutocomplete {
     padding-left:14px;
     z-index: 1;
+    -moz-box-shadow:    2px 2px 2px 2px #ccc;
+    -webkit-box-shadow: 2px 2px 2px 2px #ccc;
+    box-shadow:         2px 2px 2px 2px #ccc;
+    display:none;
 }
 
 #auto-complete {
@@ -111,9 +115,68 @@ input.storeSearch , #storesAutocomplete {
   background: #fff;
   width: 200px;
   margin: 13px;
-  padding: 10px;
+  padding: 8px;
   display:inline-block;
   transition:opacity;
+  position:relative;
+  text-align: left;
+}
+
+body:not([data-storeId]) .searchResultBox .reserve {
+  opacity:0;
+}
+
+.searchResultBox .inactive {
+  cursor:pointer;
+}
+
+.searchResultBox .reserve {
+  background-color: #DA061C;
+  border:none;
+  color:white;
+  padding:6px;
+  position:absolute;
+  bottom:0;
+  right:0;
+  text-align: left;
+  height:36px;
+  margin:0px;
+  width:54px;
+  transition:all 0.5s;
+  opacity:1;
+  white-space: nowrap;
+}
+
+.searchResultBox .reserve .waiting {
+  text-align: center;
+}
+
+.searchResultBox .reserve:focus
+{   outline:none;
+}
+
+.searchResultBox .reserve.done {
+  background-color: #333;
+  width:131px;
+}
+
+.searchResultBox .reserve.waiting .icon {
+  width: 20px;
+  height: 20px;
+  background: #DA061C url('../img/spinner2.gif') 50% 50% no-repeat;
+  background-size:12px;
+  display:inline-block;
+}
+
+.searchResultBox .reserve .inactive,
+.searchResultBox .reserve .waiting,
+.searchResultBox .reserve .done {
+  display:none;
+}
+.searchResultBox .reserve.inactive .inactive,
+.searchResultBox .reserve.waiting .waiting,
+.searchResultBox .reserve.done .done {
+  display:block;
 }
 
 .outOfStock {
@@ -123,6 +186,8 @@ input.storeSearch , #storesAutocomplete {
 .searchResultBox img {
   width: 180px;
   height: 180px;
+  display: block;
+  margin: auto;
 }
 .searchResultBox .description {
     display:inline-block;
@@ -143,12 +208,28 @@ input.storeSearch , #storesAutocomplete {
     width: 200px;
     margin-bottom: 1px;
     margin-top: 3px;
-    height:2.5em;
+    height:5.5em;
+    line-height: 133%;
 }
 
-.searchResultBox span {
+.searchResultBox .buy {
+  display: block;
+  border-top: 1px #c2c2c2 solid;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+}
+
+.searchResultBox .buy .price {
+  position: relative;
   font-size: 16px;
   font-weight: bold;
+  margin-top: 10px;
+  display: inline-block;
+  margin-left: 8px;  
 }
 
 #logo img {

@@ -55,13 +55,25 @@
 
    <template id="resultTemplate">
        <div class="searchResultBox" data-productId="\{{productId}}">
-           <img data-src="\{{imgUrl}}">
+           <img data-src="\{{imgUrl}}" data-summaryText="\{{summaryText}}">
            <span class="description">
               <h3>\{{{highlightedProductTitle}}}</h3>
-              <span>\{{formattedPrice}}</span>
+              <span class="buy">
+                 <span class="price">
+                    \{{formattedPrice}}
+                 </span>
+                 
+                 <button class="reserve inactive">
+                     <span class="inactive">Reserve</span>
+                     <span class="waiting"><span class="icon"></span></span>
+                     <span class="done">Reservation no. <span class="number"></span><span class="icon"></span></span>
+                 </button>
+              </span>
            </span>
+
        </div>
    </template>
+
   
 </body>
 </html>

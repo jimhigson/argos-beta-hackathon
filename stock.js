@@ -7,7 +7,7 @@ module.exports = function getStockInfo(req, res) {
        storeNumber = req.params.storeNumber,
        avilabilityMap = [];
 
-   var reponseXML = makeXMLRequestBody(partNumbers, storeNumber, function(xml) {
+   makeXMLRequestBody(partNumbers, storeNumber, function(xml) {
 
       parseXmlStringToJs(xml, function(err, result) {
 

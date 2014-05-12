@@ -1,6 +1,12 @@
 var request = require('request'),
     xml2js = require('xml2js');
 
+var XML_2_JS_OPTIONS = {
+
+   tagNameProcessors: [xml2js.processors.stripPrefix],
+   attrNameProcessors: [xml2js.processors.stripPrefix]
+};
+
 module.exports = function getStockInfo(req, res) {
 
    var partNumbers = req.params.partNumbers.split(','),
@@ -11,13 +17,7 @@ module.exports = function getStockInfo(req, res) {
 
       console.log(xml);
       
-      var xml2jsOptions = {
-
-         tagNameProcessors: [xml2js.processors.stripPrefix],
-         attrNameProcessors: [xml2js.processors.stripPrefix]
-      };
-      
-      xml2js.parseString(xml, xml2jsOptions, function(err, result) {
+      xml2js.parseString(xml, XML_2_JS_OPTIONS, function(err, result) {
          
          try {
             

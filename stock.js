@@ -1,5 +1,5 @@
 var request = require('request'),
-    parseXmlStringToJs = require('xml2js').parseString;
+    xml2js = require('xml2js');
 
 module.exports = function getStockInfo(req, res) {
 
@@ -9,15 +9,25 @@ module.exports = function getStockInfo(req, res) {
 
    makeXMLRequestBody(partNumbers, storeNumber, function(xml) {
 
-      parseXmlStringToJs(xml, function(err, result) {
+      console.log(xml);
+      
+      var xml2jsOptions = {
 
+         tagNameProcessors: [xml2js.processors.stripPrefix],
+         attrNameProcessors: [xml2js.processors.stripPrefix]
+      };
+      
+      xml2js.parseString(xml, xml2jsOptions, function(err, result) {
+         
          try {
-
-            for (var i = 0; i < result['stk:Stock']['stk:AvailabilityList'][0]['stk:Availability'][0]['bsk:Basket'][0]['bsk:ItemList'][0]['cmn:Item'].length; i++) {
-               var stockItem = result['stk:Stock']['stk:AvailabilityList'][0]['stk:Availability'][0]['bsk:Basket'][0]['bsk:ItemList'][0]['cmn:Item'][i];
+            
+            var items = result['Stock']['AvailabilityList'][0]['Availability'][0]['Basket'][0]['ItemList'][0]['Item'];
+            
+            for (var i = 0; i < items.length; i++) {
+               var stockItem = items[i];
 
                var partNumber = stockItem.$.id;
-               var availability = stockItem['cmn:Status'][0]._;
+               var availability = stockItem['Status'][0]._;
 
                avilabilityMap.push({partNumber: partNumber, availability: availability});
             }

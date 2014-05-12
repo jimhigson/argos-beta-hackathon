@@ -21,13 +21,13 @@ module.exports = function getStockInfo(req, res) {
          
          try {
             
-            var items = result['Stock']['AvailabilityList'][0]['Availability'][0]['Basket'][0]['ItemList'][0]['Item'];
+            var items = result.Stock.AvailabilityList[0].Availability[0].Basket[0].ItemList[0].Item;
             
             for (var i = 0; i < items.length; i++) {
                var stockItem = items[i];
 
                var partNumber = stockItem.$.id;
-               var availability = stockItem['Status'][0]._;
+               var availability = stockItem.Status[0]._;
 
                avilabilityMap.push({partNumber: partNumber, availability: availability});
             }

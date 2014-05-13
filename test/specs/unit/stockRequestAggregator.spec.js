@@ -1,21 +1,6 @@
 describe('providing a facility to check stock', function() {
 
-   var proxyquire = require('proxyquire'),
-       sinon = require('sinon'),
-       aStoreNumber = 123;
 
-   var stockApiRequestorStub,
-       resultsCallback,
-       stockApiRequestAggregator;
-   
-   beforeEach(function() {
-      stockApiRequestorStub = sinon.stub();
-      resultsCallback = sinon.stub();
-
-      stockApiRequestAggregator = proxyquire(  '../../../src/stockApi/stockApiRequestAggregator',
-         {'./stockApiRequester.js': stockApiRequestorStub}
-      );      
-   });
 
    
    it( 'gives a single callback after making multiple requests', function() {
@@ -23,7 +8,7 @@ describe('providing a facility to check stock', function() {
       stockApiRequestAggregator.setBatchSize(4);
 
       // for this test we don't care about the actual results contents - always give the same
-      stockApiRequestorStub.callsArgWithAsync(2, [{partNumber:1, availability:'available'}]);
+      whenRequestingProducts(sinon.match.any).theServiceReturns([{partNumber:1, availability:'available'}]);
 
       stockApiRequestAggregator.request([1,2,3,4,5,6,7,8,9,10,11,12], aStoreNumber, resultsCallback);
 
@@ -55,6 +40,25 @@ describe('providing a facility to check stock', function() {
       });
    });
 
+   // --------------- end of tests -----------------
+
+   var proxyquire = require('proxyquire'),
+      sinon = require('sinon'),
+      aStoreNumber = 123;
+
+   var stockApiRequestorStub,
+      resultsCallback,
+      stockApiRequestAggregator;
+
+   beforeEach(function() {
+      stockApiRequestorStub = sinon.stub();
+      resultsCallback = sinon.stub();
+
+      stockApiRequestAggregator = proxyquire(  '../../../src/stockApi/stockApiRequestAggregator',
+         {'./stockApiRequester.js': stockApiRequestorStub}
+      );
+   });   
+   
    
    function whenRequestingProducts( productNumbers ) {
       return {

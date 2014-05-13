@@ -17,7 +17,7 @@ $(document).ready(function ($) {
       if( currentStore && $('.searchResultBox').length > 0 ) {
          var productList = $('.searchResultBox').toArray().map(function(ele) {
             return $(ele).data('productid');
-         });
+         }).sort();
          
          var availabilityUrl = '/stockInfo/?storeNumber=' + currentStore + '&partNumbers=' + productList.join(',');
          

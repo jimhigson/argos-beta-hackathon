@@ -57,7 +57,7 @@ app
    .get('/search/:term',            servePageOrJson )
    .get('/search/:category/:term',  servePageOrJson )
    .get('/stores/:term', serveStoreJson)
-   .get('/stockInfo/:storeNumber/:partNumbers', getStockInfo )
+   .get('/stockInfo/', getStockInfo )
    .get('/makeReservation/:productNumber', makeReservation )
    .get('/makeReservationStub/:productNumber', makeReservationStub )
    .use(express.static('statics'));

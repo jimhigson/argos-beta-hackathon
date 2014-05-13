@@ -19,7 +19,7 @@ $(document).ready(function ($) {
             return $(ele).data('productid');
          });
          
-         var availabilityUrl = '/stockInfo/' + currentStore + '/' + productList.join(',');
+         var availabilityUrl = '/stockInfo/?storeNumber=' + currentStore + '&partNumbers=' + productList.join(',');
          
          console.log('I need to hit', availabilityUrl);
          $.ajax( availabilityUrl )

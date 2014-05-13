@@ -23,10 +23,10 @@ function makeXMLRequestBody(partNumbers, storeNumber, callback) {
    });
 }
 
-module.exports = function getStockInfo(req, res) {
+module.exports = function getStockInfoMiddleware(req, res) {
 
-   var partNumbers = req.params.partNumbers.split(','),
-       storeNumber = req.params.storeNumber;
+   var partNumbers = req.query.partNumbers.split(','),
+       storeNumber = req.query.storeNumber;
 
    makeXMLRequestBody(partNumbers, storeNumber, function( xml ) {
 

@@ -2,7 +2,8 @@ var request = require('request'),
     handlebars = require('handlebars'),
     fs = require('fs'),
     parseStockApiResponse = require('./parseStockApiResponse.js'),
-    requestXmlBodyTemplate = handlebars.compile( fs.readFileSync('src/stockApi/requestTemplate.handlebars', 'utf-8') );
+    requestXmlBodyTemplate = handlebars.compile( fs.readFileSync('src/stockApi/requestTemplate.handlebars', 'utf-8')),
+    API_KEY = 'uk4tbngzceyxpwwvfcbtkvkj';
 
 module.exports = function getStockInfo(req, res) {
 
@@ -28,7 +29,7 @@ module.exports = function getStockInfo(req, res) {
    function makeXMLRequestBody(partNumbers, storeNumber, callback) {
 
       request({
-         url: 'https://api.homeretailgroup.com/stock/argos?apiKey=uk4tbngzceyxpwwvfcbtkvkj',
+         url: 'https://api.homeretailgroup.com/stock/argos?apiKey=' + API_KEY,
          method: 'POST',
          body: requestXmlBody(partNumbers, storeNumber)
       }, function(error, response) {

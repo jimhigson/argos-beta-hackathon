@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<stk:Stock brand="argos" version="1"
+      xsi:schemaLocation="http://schemas.homeretailgroup.com/stock stock-v1.xsd"
+      xmlns:bsk="http://schemas.homeretailgroup.com/basket"
+      xmlns:cmn="http://schemas.homeretailgroup.com/common"
+      xmlns:loc="http://schemas.homeretailgroup.com/location"
+      xmlns:stk="http://schemas.homeretailgroup.com/stock"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+   <stk:LocationList>
+      <loc:Location uri="http://api.homeretailgroup.com/location/argos/store/{{storeNumber}}"/>
+   </stk:LocationList>
+   <bsk:Basket version="1">
+       <bsk:ItemList>
+          {{#each partNumbers}}
+             <cmn:Item type="product" uri="http://api.homeretailgroup.com/product/argos/{{this}}" id="{{this}}">
+                <cmn:Quantity type="requested">1</cmn:Quantity>
+             </cmn:Item>
+          {{/each}}           
+       </bsk:ItemList>
+   </bsk:Basket>
+</stk:Stock>

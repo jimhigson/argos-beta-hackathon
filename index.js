@@ -82,7 +82,7 @@ function serveStoreJson(req, res) {
 
    request({
 
-      url: ELASTIC_SEARCH_HOST + '/stores/_search?q=' + term + '*',
+      url: ELASTIC_SEARCH_HOST + '/stores/_search?q=' + term + '*'
 
    }, function (error, _, responseBodyJson) {
 

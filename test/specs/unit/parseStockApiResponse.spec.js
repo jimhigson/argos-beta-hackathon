@@ -1,6 +1,57 @@
 describe('parsing stock api responses', function() {
    
    var parseStockApiResponse = require('../../../parseStockApiResponse.js');
+
+   var returnedError,
+       returnedJson;
+
+   function somethingToHaveBeenGivenToTheCallback() {
+      return returnedJson || returnedError;
+   }
+   
+   beforeEach(function() {
+      returnedError = undefined;
+      returnedJson = undefined;
+   });   
+   
+   describe('error cases', function() {
+
+      it('handles invalid xml', function() {
+
+         var invalidXml = 'w>hat a lovel=y day!';
+
+         parseStockApiResponse( invalidXml, function(err, json) {
+            returnedError = err;
+            returnedJson = json;
+         });
+
+         waitsFor(somethingToHaveBeenGivenToTheCallback, 'the json version of the XML to be available');
+
+         runs(function() {
+            expect(returnedError).toBeDefined();
+            expect(returnedJson).toBeUndefined();
+         });
+      });
+
+      it('handles xml that is valid but not as expected', function() {
+
+         var invalidXml = '<?xml version="1.0" encoding="UTF-8"?>' +
+                          '<shop><street><house></house></street></shop>';
+
+         parseStockApiResponse( invalidXml, function(err, json) {
+            returnedError = err;
+            returnedJson = json;
+         });
+
+         waitsFor(somethingToHaveBeenGivenToTheCallback, 'the json version of the XML to be available');
+
+         runs(function() {
+            expect(returnedError).toBeDefined();
+            expect(returnedJson).toBeUndefined();
+         });
+      });      
+   });
+   
    
    it('can parse an available item', function() {
       
@@ -23,18 +74,15 @@ describe('parsing stock api responses', function() {
          '   </stk:Availability>' +
          '</stk:AvailabilityList>' +
          '</stk:Stock>';
-      
-      var returnedJson;
-      
+            
       parseStockApiResponse( sampleXml, function(err, json) {
          returnedJson = json;
       });
 
-      waitsFor(function() {
-         return !!returnedJson;
-      }, 'the json version of the XML to be available');
+      waitsFor(somethingToHaveBeenGivenToTheCallback, 'the json version of the XML to be available');
 
       runs(function() {
+         expect(returnedError).toBeUndefined();
          expect(returnedJson).toEqual([
             {'partNumber':'123',
              'availability':'available'}
@@ -64,17 +112,14 @@ describe('parsing stock api responses', function() {
          '</stk:AvailabilityList>' +
          '</stk:Stock>';
 
-      var returnedJson;
-
       parseStockApiResponse( sampleXml, function(err, json) {
          returnedJson = json;
       });
 
-      waitsFor(function() {
-         return !!returnedJson;
-      }, 'the json version of the XML to be available');
+      waitsFor(somethingToHaveBeenGivenToTheCallback, 'the json version of the XML to be available');
 
       runs(function() {
+         expect(returnedError).toBeUndefined();
          expect(returnedJson).toEqual([
             {'partNumber':'123',
                'availability':'out-of-stock'}
@@ -111,17 +156,14 @@ describe('parsing stock api responses', function() {
          '</stk:AvailabilityList>' +
          '</stk:Stock>';
 
-      var returnedJson;
-
       parseStockApiResponse( sampleXml, function(err, json) {
          returnedJson = json;
       });
 
-      waitsFor(function() {
-         return !!returnedJson;
-      }, 'the json version of the XML to be available');
+      waitsFor(somethingToHaveBeenGivenToTheCallback, 'the json version of the XML to be available');
 
       runs(function() {
+         expect(returnedError).toBeUndefined();
          expect(returnedJson).toEqual([
             {'partNumber':'123',
                'availability':'available'},
@@ -130,5 +172,7 @@ describe('parsing stock api responses', function() {
          ]);
       });
    });
+   
+   
    
 });

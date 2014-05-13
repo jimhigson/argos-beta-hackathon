@@ -16,6 +16,10 @@ module.exports = function(xml, callback) {
    
    xml2js.parseString(xml, XML_2_JS_OPTIONS, function(err, result) {
 
+      if( err ) {
+         callback(err);
+      }
+      
       try {
 
          extractItems(result).forEach(function(stockItem) {

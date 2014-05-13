@@ -27,7 +27,6 @@ module.exports = function getStockInfo(req, res) {
    
    function makeXMLRequestBody(partNumbers, storeNumber, callback) {
 
-      //Start of XML request
       request({
          url: 'https://api.homeretailgroup.com/stock/argos?apiKey=uk4tbngzceyxpwwvfcbtkvkj',
          method: 'POST',

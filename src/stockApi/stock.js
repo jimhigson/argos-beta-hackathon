@@ -5,6 +5,24 @@ var request = require('request'),
     requestXmlBodyTemplate = handlebars.compile( fs.readFileSync('src/stockApi/requestTemplate.handlebars', 'utf-8')),
     API_KEY = 'uk4tbngzceyxpwwvfcbtkvkj';
 
+function requestXmlBody(partNumbers, storeNumber) {
+   return requestXmlBodyTemplate({
+      storeNumber: storeNumber,
+      partNumbers: partNumbers
+   });
+}
+
+function makeXMLRequestBody(partNumbers, storeNumber, callback) {
+
+   request({
+      url: 'https://api.homeretailgroup.com/stock/argos?apiKey=' + API_KEY,
+      method: 'POST',
+      body: requestXmlBody(partNumbers, storeNumber)
+   }, function(error, response) {
+      callback(response.body);
+   });
+}
+
 module.exports = function getStockInfo(req, res) {
 
    var partNumbers = req.params.partNumbers.split(','),
@@ -18,22 +36,4 @@ module.exports = function getStockInfo(req, res) {
          res.send(stockJson);
       });
    });
-
-   function requestXmlBody(partNumbers, storeNumber) {
-      return requestXmlBodyTemplate({
-         storeNumber: storeNumber,
-         partNumbers: partNumbers
-      });
-   }
-   
-   function makeXMLRequestBody(partNumbers, storeNumber, callback) {
-
-      request({
-         url: 'https://api.homeretailgroup.com/stock/argos?apiKey=' + API_KEY,
-         method: 'POST',
-         body: requestXmlBody(partNumbers, storeNumber)
-      }, function(error, response) {
-         callback(response.body);
-      });
-   }
 };

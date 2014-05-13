@@ -12,7 +12,7 @@ var PORT = 6677,
     parsePriceRange = require('./parsePriceRange.js'),
     elasticSearchRequestBody = require('./elasticSearchRequestBody.js'),
     likelySameNoun = require('./likelySameNoun.js'),
-    getStockInfo = require('./stock.js'),
+    getStockInfo = require('./src/stockApi/stock.js'),
    
     cmdLineParams = require('minimist')(process.argv.slice(2)),
     isProd = (cmdLineParams.env == 'prod'),

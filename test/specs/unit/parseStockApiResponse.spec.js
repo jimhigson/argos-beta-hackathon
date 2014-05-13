@@ -1,6 +1,6 @@
 describe('parsing stock api responses', function() {
    
-   var parseStockApiResponse = require('../../../parseStockApiResponse.js');
+   var parseStockApiResponse = require('../../../src/stockApi/parseStockApiResponse.js');
 
    var returnedError,
        returnedJson;

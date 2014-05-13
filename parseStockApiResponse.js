@@ -6,6 +6,10 @@ var XML_2_JS_OPTIONS = {
    attrNameProcessors: [xml2js.processors.stripPrefix]
 };
 
+function extractItems(result) {
+   return result.Stock.AvailabilityList[0].Availability[0].Basket[0].ItemList[0].Item;
+}
+
 module.exports = function(xml, callback) {
 
    var availabilityMap = [];
@@ -14,9 +18,7 @@ module.exports = function(xml, callback) {
 
       try {
 
-         var items = result.Stock.AvailabilityList[0].Availability[0].Basket[0].ItemList[0].Item;
-
-         items.forEach(function(stockItem) {
+         extractItems(result).forEach(function(stockItem) {
 
             var partNumber = stockItem.$.id;
             var availability = stockItem.Status[0]._;

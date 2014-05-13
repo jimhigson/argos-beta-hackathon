@@ -15,7 +15,7 @@ module.exports = function(xml, callback) {
    var availabilityMap = [];
    
    xml2js.parseString(xml, XML_2_JS_OPTIONS, function(err, result) {
-
+      
       if( err ) {
          callback(err);
       }

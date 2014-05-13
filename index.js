@@ -57,13 +57,24 @@ app
    .get('/search/:term',            servePageOrJson )
    .get('/search/:category/:term',  servePageOrJson )
    .get('/stores/:term', serveStoreJson)
-   .get('/stockInfo/', getStockInfo )
+   .get('/stockInfo/', getStockInfoMiddleware)
    .get('/makeReservation/:productNumber', makeReservation )
    .get('/makeReservationStub/:productNumber', makeReservationStub )
    .use(express.static('statics'));
 
 app.listen(PORT);
 console.log('server started'.green, 'in', (isProd? 'production':'dev').green, 'mode');
+
+function getStockInfoMiddleware(req, res) {
+   var partNumbers = req.query.partNumbers.split(','),
+      storeNumber = req.query.storeNumber;
+
+   res.setHeader('Content-Type', 'application/json');
+
+   getStockInfo(partNumbers, storeNumber, function( result ) {
+      res.send(result);
+   });
+}
 
 function serveStoreJson(req, res) {
    

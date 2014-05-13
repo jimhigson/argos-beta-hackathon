@@ -58,18 +58,13 @@ function makeBatchRequest( partNumbersBatch, storeNumber, callback ) {
    });
 }
 
-module.exports = function getStockInfoMiddleware(req, res) {
+module.exports = function(partNumbers, storeNumber, callback) {
 
-   var partNumbers = req.query.partNumbers.split(','),
-       storeNumber = req.query.storeNumber,
-       batches = batchArray(partNumbers, BATCH_SIZE);
-
-   res.setHeader('Content-Type', 'application/json');
-
-   var data = [];
+   var batches = batchArray(partNumbers, BATCH_SIZE),
+       data = [];
    
    var bar = barrier(function() {
-      res.send(data);
+      callback(data);
    });
    
    batches.forEach(function(batch) {

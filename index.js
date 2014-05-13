@@ -71,7 +71,7 @@ function getStockInfoMiddleware(req, res) {
 
    res.setHeader('Content-Type', 'application/json');
 
-   getStockInfo(partNumbers, storeNumber, function( result ) {
+   getStockInfo.request(partNumbers, storeNumber, function( result ) {
       res.send(result);
    });
 }

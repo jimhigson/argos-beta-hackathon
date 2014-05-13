@@ -1,12 +1,12 @@
 var stockApiRequester = require('./stockApiRequester.js'),
     batchArray = require('../util.js').batchArray,
     barrier = require('../barrier.js'),
-    BATCH_SIZE = 10;
+    batchSize = 10;
 
 
 module.exports.request = function(partNumbers, storeNumber, callback) {
 
-   var batches = batchArray(partNumbers, BATCH_SIZE),
+   var batches = batchArray(partNumbers, batchSize),
        data = [];
    
    var bar = barrier(function() {
@@ -27,4 +27,6 @@ module.exports.request = function(partNumbers, storeNumber, callback) {
    });
 };
 
-module.exports.batchSize = 10;
+module.exports.setBatchSize = function(n) {
+   batchSize = n;
+};

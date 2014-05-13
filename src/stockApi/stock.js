@@ -38,7 +38,7 @@ module.exports = function getStockInfo(req, res) {
       xmlRequest += '</bsk:ItemList></bsk:Basket></stk:Stock>';
 
       request({
-         url: 'http://api.homeretailgroup.com/stock/argos?apiKey=uk4tbngzceyxpwwvfcbtkvkj',
+         url: 'https://api.homeretailgroup.com/stock/argos?apiKey=uk4tbngzceyxpwwvfcbtkvkj',
          method: 'POST',
          body: xmlRequest
       }, function(error, response) {

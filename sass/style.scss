@@ -1,4 +1,6 @@
 
+$argos-red: #DA061C;
+
 body {
   background: white;
   overflow-y:scroll;
@@ -131,7 +133,7 @@ body:not([data-storeId]) .searchResultBox .reserve {
 }
 
 .searchResultBox .reserve {
-  background-color: #DA061C;
+  background-color: $argos-red;
   border:none;
   color:white;
   padding:6px;
@@ -163,7 +165,7 @@ body:not([data-storeId]) .searchResultBox .reserve {
 .searchResultBox .reserve.waiting .icon {
   width: 20px;
   height: 20px;
-  background: #DA061C url('../img/spinner2.gif') 50% 50% no-repeat;
+  background: $argos-red url('../img/spinner2.gif') 50% 50% no-repeat;
   background-size:12px;
   display:inline-block;
 }

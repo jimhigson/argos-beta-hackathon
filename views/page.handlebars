@@ -50,30 +50,51 @@
 
     </header>
 
-    <div id="categories"></div>   
+    <div id="categories"></div>
     <div id="results"></div>
 
-   <template id="resultTemplate">
-       <div class="searchResultBox" data-productId="\{{productId}}">
-           <img data-src="\{{imgUrl}}" data-summaryText="\{{summaryText}}">
-           <span class="description">
-              <h3>\{{{highlightedProductTitle}}}</h3>
-              <span class="buy">
-                 <span class="price">
-                    \{{formattedPrice}}
-                 </span>
-                 
-                 <button class="reserve inactive">
-                     <span class="inactive">Reserve</span>
-                     <span class="waiting"><span class="icon"></span></span>
-                     <span class="done">Reservation no. <span class="number"></span><span class="icon"></span></span>
-                 </button>
-              </span>
-           </span>
+    <template id="resultTemplate">
+        <div class="searchResultBoxContainer">
+            <div class="searchResultBox upArrow" data-productId="\{{productId}}" data-summaryText="\{{summaryText}}">
+               <img data-src="\{{imgUrl}}">
+               <span class="description">
+                  <h3>\{{{highlightedProductTitle}}}</h3>
+                  <span class="buy">
+                     <span class="price">
+                        \{{formattedPrice}}
+                     </span>
 
+                     <button class="reserve inactive">
+                         <span class="inactive">Reserve</span>
+                         <span class="waiting"><span class="icon"></span></span>
+                         <span class="done">Reservation no. <span class="number"></span><span class="icon"></span></span>
+                     </button>
+                  </span>
+               </span>
+           </div>
        </div>
-   </template>
+    </template>
 
-  
+    <template id="pdpTemplate">
+        <div class="pdp">
+            <div class="preview">
+                <img class="image" src="\{{imgUrl}}" />
+                <div class="description">
+                    <h2 class="title">\{{{title}}}</h2>
+                    <p class="price">\{{price}}</p>
+                    <p class="summary">\{{description}}</p>
+                    <button class="reserve">
+                        <span>Reserve</span>
+                    </button>
+                    <div>
+                        <img class="thumbnail" src="\{{imgUrl}}" />
+                        <img class="thumbnail" src="\{{imgUrl}}" />
+                        <img class="thumbnail" src="\{{imgUrl}}" />
+                    </div>
+                </div>
+            </div>
+            <span class="close"></span>
+        </div>
+    </template>
 </body>
 </html>

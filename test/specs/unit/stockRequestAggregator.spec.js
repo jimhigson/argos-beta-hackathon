@@ -1,8 +1,6 @@
-describe('providing a facility to check stock', function() {
+describe('providing a facility to aggregate stock checks into small batches', function() {
 
 
-
-   
    it( 'gives a single callback after making multiple requests', function() {
 
       stockApiRequestAggregator.setBatchSize(4);
@@ -43,12 +41,12 @@ describe('providing a facility to check stock', function() {
    // --------------- end of tests -----------------
 
    var proxyquire = require('proxyquire'),
-      sinon = require('sinon'),
-      aStoreNumber = 123;
+       sinon = require('sinon'),
+       aStoreNumber = 123,
 
-   var stockApiRequestorStub,
-      resultsCallback,
-      stockApiRequestAggregator;
+       stockApiRequestorStub,
+       resultsCallback,
+       stockApiRequestAggregator;
 
    beforeEach(function() {
       stockApiRequestorStub = sinon.stub();

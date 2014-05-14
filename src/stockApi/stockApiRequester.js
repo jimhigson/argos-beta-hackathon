@@ -28,13 +28,13 @@ function requestXmlBody(partNumbers, storeNumber) {
    });
 }
 
-module.exports = function stockApiRequester( partNumbersBatch, storeNumber, callback ) {
+module.exports = function stockApiRequester( partNumbers, storeNumber, callback ) {
 
    request({
 
       url: API_ROOT + 'stock/argos?apiKey=' + API_KEY,
       method: 'POST',
-      body: requestXmlBody(partNumbersBatch, storeNumber)
+      body: requestXmlBody(partNumbers, storeNumber)
 
    }, function (httpErr, response) {
 
@@ -47,12 +47,12 @@ module.exports = function stockApiRequester( partNumbersBatch, storeNumber, call
             if (!parseErr) {
                callback(json);
             } else {
-               handleError(parseErr, partNumbersBatch, storeNumber, callback);
+               handleError(parseErr, partNumbers, storeNumber, callback);
             }
          });
       } else {
 
-         handleError(httpErr, partNumbersBatch, storeNumber, callback);
+         handleError(httpErr, partNumbers, storeNumber, callback);
       }
    });
 }

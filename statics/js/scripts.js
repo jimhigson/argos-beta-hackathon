@@ -1,4 +1,7 @@
-
+//forces element redraw: http://forrst.com/posts/jQuery_redraw-BGv
+jQuery.fn.redraw = function() {
+    return this.hide(0, function(){$(this).show()});
+};
 $(document).ready(function ($) {
 
    var resultTemplate = Handlebars.compile( $('template#resultTemplate').html() );

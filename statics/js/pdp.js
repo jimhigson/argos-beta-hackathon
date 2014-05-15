@@ -93,7 +93,7 @@ $(document).ready(function ($) {
                 .addClass("searchResultBoxExpand" + (withAnim ? "" : " skipAnim"))
                 .redraw()
                 .find(".pdp")
-                .removeClass("hide")
+                .removeClass("hide skipAnim")
                 .addClass("show" + (withAnim ? "" : " skipAnim"))
                 .redraw();
          }
@@ -102,8 +102,9 @@ $(document).ready(function ($) {
             if (withAnim) {
                 resetResultBoxContainer(product)
                     .addClass("searchResultBoxCollapse")
+                    .redraw()
                     .find(".pdp")
-                    .removeClass("show")
+                    .removeClass("show skipAnim")
                     .addClass("hide")
                     .redraw();
             }

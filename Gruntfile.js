@@ -92,5 +92,6 @@ module.exports = function (grunt) {
    // register a few tasks
    grunt.registerTask('build', ['sass:all', 'uglify:clientSideJs', 'cssmin:minifyCss']);
    grunt.registerTask('start-dev', ['develop:server', 'sass:all', 'watch:sources']);
+   grunt.registerTask('default', 'start-dev');
    grunt.registerTask('test', ['serversideJasmine']);
 };

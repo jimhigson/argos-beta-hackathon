@@ -12,18 +12,18 @@ $(document).ready(function ($) {
 
         function init() {
             previewTemplate = Handlebars.compile( $('template#pdpTemplate').html() );
-            $("#results").on("click", ".searchResultBox", searchResultItemClickedHandler);
+            $("#results").on("click", ".searchResultBox, .pdp .close", togglePreview);
             search = $('#search');
         }
 
-        function searchResultItemClickedHandler (event) {
+        function togglePreview (event) {
 
             if (currentItem!=undefined) {
                 stopScroll();
                 lastSelectedItem = currentItem;
             }
 
-            currentItem = $(this).parent(".searchResultBoxContainer");
+            currentItem = $(this).closest(".searchResultBoxContainer");
             var isSameItem = currentItem.is(lastSelectedItem);
             var isDifferentRow = isSelectedProductOnDifferentRow(currentItem,lastSelectedItem);
             var scrollTop = calculateScrollTop(currentItem, lastSelectedItem);
@@ -100,6 +100,7 @@ $(document).ready(function ($) {
 
         function collapseProductPreview(product, withAnim) {
             if (withAnim) {
+                console.log(product);
                 resetResultBoxContainer(product)
                     .addClass("searchResultBoxCollapse")
                     .redraw()

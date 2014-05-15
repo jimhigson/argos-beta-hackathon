@@ -1,11 +1,12 @@
-var parseStockApiResponse = require('./parseStockApiResponse.js'),
+
+var parseStockApiResponse = require('./parseStockApiResponse.js');
     handlebars = require('handlebars'),
     request = require('request'),
     fs = require('fs'),
     API_KEY = 'uk4tbngzceyxpwwvfcbtkvkj',
     API_ROOT = 'https://api.homeretailgroup.com/',       
 
-    requestXmlBodyTemplate = handlebars.compile( fs.readFileSync('src/stockApi/requestTemplate.handlebars', 'utf-8'));
+    requestXmlBodyTemplate = handlebars.compile( fs.readFileSync('src/stockApi/requestTemplate.handlebars', 'utf-8')),
 
 function handleError( err, partNumbersBatch, storeNumber, callback ) {
 
